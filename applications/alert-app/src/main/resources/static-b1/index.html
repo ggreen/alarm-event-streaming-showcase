@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home Control Panel - Alerts</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+<div class="container">
+    <header class="header">
+        <h1>Activity & Alerts Log</h1>
+        <div class="user-profile">
+            <i class="fas fa-user-circle"></i>
+            <span>John Doe</span>
+        </div>
+    </header>
+
+    <div class="alerts-section">
+        <div class="alerts-header">
+            <h2><i class="fas fa-bell"></i> Recent Events</h2>
+            <button class="clear-alerts-btn"><i class="fas fa-check-double"></i> Acknowledge All</button>
+        </div>
+
+        <div class="alert-table-container">
+            <table id="alerts-table">
+                <thead>
+                <tr>
+                    <th>Time</th>
+                    <th>Severity</th>
+                    <th>Event</th>
+                    <th>Device / Zone</th>
+                </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="summary-card">
+            <div class="summary-item status-security">
+                <i class="fas fa-shield-alt"></i>
+                <span>System Status:</span>
+                <strong class="security-status-text off">Disarmed</strong>
+            </div>
+            <div class="summary-item status-temp">
+                <i class="fas fa-thermometer-half"></i>
+                <span>Current Temp:</span>
+                <strong>72°F</strong>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
