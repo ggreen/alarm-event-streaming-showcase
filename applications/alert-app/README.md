@@ -1,4 +1,10 @@
 
+```shell
+--stream.filter.value='imani' --stream.filter.sql="accountId = 'imani' AND level IN ('critical', 'high','medium','low')"
+```
+
+
+
 ```json
 {
   "id": "01",

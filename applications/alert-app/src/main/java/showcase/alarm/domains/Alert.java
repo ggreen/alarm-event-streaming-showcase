@@ -5,7 +5,10 @@ import org.springframework.data.annotation.Id;
 
 import java.time.LocalDateTime;
 
-public record Alert(@Id @NotNull String id, @NotNull String level,
+public record Alert(@Id @NotNull String id,
+                    @NotNull String accountId,
+                    @NotNull String level,
                     String time,
-                    LocalDateTime dateTime, @NotNull String event) {
+                    LocalDateTime dateTime,
+                    @NotNull String event) {
 }
