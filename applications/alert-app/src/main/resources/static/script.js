@@ -3,12 +3,17 @@ document.addEventListener('DOMContentLoaded', () => {
     const activityTableBody = document.querySelector('#activity-table tbody');
 
     // --- DATA FOR ALERTS TABLE (Severity-based) ---
-    const alertsData = [
-        { level: 'Critical', time: '07:22 PM', event: 'Break-in Detected (Alarm Triggered)' },
-        { level: 'High', time: '07:20 PM', event: 'Garage Door Left Open for >10 min' },
-        { level: 'High', time: '06:45 PM', event: 'Smoke Detector Battery Low' },
-        { level: 'Medium', time: '06:05 PM', event: 'Front Door Tamper Detected' },
-        { level: 'Low', time: '05:30 PM', event: 'System Offline for 5 minutes' }
+    /*
+        var alertsData = [
+            { level: 'Critical', time: '07:22 PM', event: 'Break-in Detected (Alarm Triggered)' },
+            { level: 'High', time: '07:20 PM', event: 'Garage Door Left Open for >10 min' },
+            { level: 'High', time: '06:45 PM', event: 'Smoke Detector Battery Low' },
+            { level: 'Medium', time: '06:05 PM', event: 'Front Door Tamper Detected' },
+            { level: 'Low', time: '05:30 PM', event: 'System Offline for 5 minutes' }
+        ];
+        */
+
+    var alertsData = [
     ];
 
     // --- DATA FOR ACTIVITY TABLE (Routine actions with Icons) ---
@@ -28,7 +33,16 @@ document.addEventListener('DOMContentLoaded', () => {
     /** Renders the Alerts table */
     function renderAlerts() {
         alertsData.forEach(alert => {
+
+            const existingRow = document.getElementById(alert.id);
+
+            if (existingRow) {
+                // Optional: Update the existing row instead of skipping
+                return;
+            }
+
             const row = alertsTableBody.insertRow();
+            row.id = alert.id;
             const level = alert.level.toLowerCase();
 
             // Cell 1: Level Tag
@@ -65,4 +79,19 @@ document.addEventListener('DOMContentLoaded', () => {
 
     renderAlerts();
     renderActivity();
+
+     var sse = new EventSource('alert/alerts');
+     sse.onmessage = function(message) {
+
+            console.log("data: "+message.data);
+
+            if(message.data == null || message.data.length == 0)
+                return; //skip
+
+           	alertsData = JSON.parse(message.data);
+
+           	if(alertsData.length > 0)
+           	    renderAlerts();
+           };
 });
+
