@@ -1,6 +1,6 @@
 
 ```shell
---stream.filter.value='imani' --stream.filter.sql="accountId = 'imani' AND level IN ('critical', 'high','medium','low')"
+--stream.filter.value='imani' --stream.filter.sql="accountid = 'imani' AND level IN ('critical', 'high','medium','low')"
 ```
 
 

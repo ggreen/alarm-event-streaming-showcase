@@ -11,6 +11,7 @@
     <name>alert-event-streaming-</name>
     <modules>
         <module>applications/alert-app</module>
+        <module>applications/http-mqtt-source</module>
     </modules>
     <build>
         <pluginManagement>
