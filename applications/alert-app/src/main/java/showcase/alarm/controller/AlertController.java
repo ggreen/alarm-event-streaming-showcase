@@ -1,13 +1,13 @@
 package showcase.alarm.controller;
 
 import lombok.RequiredArgsConstructor;
+import nyla.solutions.core.patterns.repository.memory.ListRepository;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.codec.ServerSentEvent;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 import reactor.core.scheduler.Schedulers;
 import showcase.alarm.domains.Alert;
-import showcase.alarm.repository.AlertRepository;
 
 import java.time.Duration;
 import java.util.concurrent.Executors;
@@ -21,8 +21,7 @@ public class AlertController {
     @Value("${alert.refresh.rateSeconds:5}")
     private long refreshRateSecs = 5;
     private final ThreadFactory factory = Executors.defaultThreadFactory();
-
-    private final AlertRepository repository;
+    private final ListRepository<Alert> repository;
 
     @GetMapping("alerts")
     public Flux<ServerSentEvent<Iterable<Alert>>> accounts() {

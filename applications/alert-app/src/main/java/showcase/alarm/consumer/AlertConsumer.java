@@ -2,9 +2,9 @@ package showcase.alarm.consumer;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import nyla.solutions.core.patterns.repository.memory.ListRepository;
 import org.springframework.stereotype.Component;
 import showcase.alarm.domains.Alert;
-import showcase.alarm.repository.AlertRepository;
 
 import java.util.function.Consumer;
 
@@ -13,7 +13,7 @@ import java.util.function.Consumer;
 @RequiredArgsConstructor
 public class AlertConsumer implements Consumer<Alert> {
 
-    private final AlertRepository repository;
+    private final ListRepository<Alert> repository;
 
     @Override
     public void accept(Alert alert) {

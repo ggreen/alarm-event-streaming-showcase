@@ -1,18 +1,14 @@
 package showcase.alarm.controller;
 
 import nyla.solutions.core.patterns.creational.generator.JavaBeanGeneratorCreator;
+import nyla.solutions.core.patterns.repository.memory.ListRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import showcase.alarm.domains.Alert;
-import showcase.alarm.repository.AlertRepository;
 
-import java.util.concurrent.Executors;
-import java.util.concurrent.ThreadFactory;
-
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 
@@ -23,7 +19,7 @@ class AlertControllerTest {
     private final Alert alert = JavaBeanGeneratorCreator.of(Alert.class).create();
 
     @Mock
-    private AlertRepository repository;
+    private ListRepository<Alert> repository;
 
     @BeforeEach
     void setUp() {
