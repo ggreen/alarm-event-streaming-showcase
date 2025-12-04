@@ -55,6 +55,11 @@ class RabbitAmqpConfig {
     Environment amqpEnvironment()
     {
         return new AmqpEnvironmentBuilder()
+                .connectionSettings()
+                .host(host)
+                .username(username)
+                .password(password)
+                .environmentBuilder()
                 .build();
     }
 

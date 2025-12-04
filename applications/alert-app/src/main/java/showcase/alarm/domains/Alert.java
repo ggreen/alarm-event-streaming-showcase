@@ -6,7 +6,7 @@ import org.springframework.data.annotation.Id;
 import java.time.LocalDateTime;
 
 public record Alert(@Id @NotNull String id,
-                    @NotNull String accountId,
+                    @NotNull String account,
                     @NotNull String level,
                     String time,
                     LocalDateTime dateTime,
