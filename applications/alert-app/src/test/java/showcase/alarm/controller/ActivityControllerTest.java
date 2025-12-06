@@ -1,4 +1,4 @@
-package showcase.alarm.consumer;
+package showcase.alarm.controller;
 
 import nyla.solutions.core.patterns.creational.generator.JavaBeanGeneratorCreator;
 import nyla.solutions.core.patterns.repository.memory.ListRepository;
@@ -9,21 +9,27 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import showcase.alarm.domains.Activity;
 
-@ExtendWith(MockitoExtension.class)
-class ActivityConsumerTest {
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.verify;
 
-    private ActivityConsumer subject;
+@ExtendWith(MockitoExtension.class)
+class ActivityControllerTest {
+
+    private ActivityController subject;
+    private final Activity activity = JavaBeanGeneratorCreator.of(Activity.class).create();
     @Mock
     private ListRepository<Activity> repository;
-    private final Activity activity = JavaBeanGeneratorCreator.of(Activity.class).create();
 
     @BeforeEach
     void setUp() {
-        subject = new ActivityConsumer(repository);
+        subject = new ActivityController(repository);
     }
 
     @Test
-    void accept() {
-        subject.accept(activity);
+    void saveActivity() {
+
+        subject.saveActivity(activity);
+
+        verify(repository).save(any());
     }
 }

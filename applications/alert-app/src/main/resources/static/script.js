@@ -17,18 +17,21 @@ document.addEventListener('DOMContentLoaded', () => {
     ];
 
     // --- DATA FOR ACTIVITY TABLE (Routine actions with Icons) ---
-    const activityData = [
-        { icon: 'fa-shield-alt', time: '07:15 PM', activity: 'Alarm System Turned OFF' },
-        { icon: 'fa-door-open', time: '07:14 PM', activity: 'Front Door Opened' },
-        { icon: 'fa-door-closed', time: '07:14 PM', activity: 'Front Door Closed' },
-        { icon: 'fa-temperature-low', time: '06:55 PM', activity: 'Thermostat Set to 68°F (Cool)' },
-        { icon: 'fa-door-open', time: '06:30 PM', activity: 'Garage Door Opened' },
-        { icon: 'fa-door-closed', time: '06:31 PM', activity: 'Garage Door Closed' },
-        { icon: 'fa-shield-alt', time: '06:00 PM', activity: 'Alarm System Turned ON (Away)' },
-        { icon: 'fa-temperature-high', time: '05:45 PM', activity: 'Thermostat Set to 72°F (Heat)' },
-        { icon: 'fa-box', time: '05:00 PM', activity: 'Refrigerator Door Ajar' },
-        { icon: 'fa-box', time: '05:01 PM', activity: 'Refrigerator Door Closed' }
-    ];
+     var activityData = [
+        ];
+
+//    const activityData = [
+//        { icon: 'fa-shield-alt', time: '07:15 PM', activity: 'Alarm System Turned OFF' },
+//        { icon: 'fa-door-open', time: '07:14 PM', activity: 'Front Door Opened' },
+//        { icon: 'fa-door-closed', time: '07:14 PM', activity: 'Front Door Closed' },
+//        { icon: 'fa-temperature-low', time: '06:55 PM', activity: 'Thermostat Set to 68°F (Cool)' },
+//        { icon: 'fa-door-open', time: '06:30 PM', activity: 'Garage Door Opened' },
+//        { icon: 'fa-door-closed', time: '06:31 PM', activity: 'Garage Door Closed' },
+//        { icon: 'fa-shield-alt', time: '06:00 PM', activity: 'Alarm System Turned ON (Away)' },
+//        { icon: 'fa-temperature-high', time: '05:45 PM', activity: 'Thermostat Set to 72°F (Heat)' },
+//        { icon: 'fa-box', time: '05:00 PM', activity: 'Refrigerator Door Ajar' },
+//        { icon: 'fa-box', time: '05:01 PM', activity: 'Refrigerator Door Closed' }
+//    ];
 
     /** Renders the Alerts table */
     function renderAlerts() {
@@ -64,24 +67,32 @@ document.addEventListener('DOMContentLoaded', () => {
     /** Renders the Activity table */
     function renderActivity() {
         activityData.forEach(activity => {
-            const row = activityTableBody.insertRow();
 
-            // Cell 1: Icon
-            row.insertCell().innerHTML = `<div class="activity-icon"><i class="fas ${activity.icon}"></i></div>`;
+         const existingRow = document.getElementById(activity.id);
 
-            // Cell 2: Time
-            row.insertCell().textContent = activity.time;
+         if (existingRow) {
+            return; //skip
+         }
 
-            // Cell 3: Activity Description
-            row.insertCell().textContent = activity.activity;
+         const row = activityTableBody.insertRow();
+         row.id = activity.id;
+
+         // Cell 1: Icon
+         row.insertCell().innerHTML = `<div class="activity-icon"><i class="fas ${activity.icon}"></i></div>`;
+
+         // Cell 2: Time
+         row.insertCell().textContent = activity.time;
+
+         // Cell 3: Activity Description
+         row.insertCell().textContent = activity.activity;
         });
     }
 
     renderAlerts();
     renderActivity();
 
-     var sse = new EventSource('alert/alerts');
-     sse.onmessage = function(message) {
+     var alertSSE = new EventSource('alert/alerts');
+     alertSSE.onmessage = function(message) {
 
             console.log("data: "+message.data);
 
@@ -92,6 +103,21 @@ document.addEventListener('DOMContentLoaded', () => {
 
            	if(alertsData.length > 0)
            	    renderAlerts();
-           };
+      };
+
+   var activitySSE = new EventSource('activities/activity');
+        activitySSE.onmessage = function(message) {
+
+               console.log("data: "+message.data);
+
+               if(message.data == null || message.data.length == 0)
+                   return; //skip
+
+              	activityData = JSON.parse(message.data);
+
+              	if(activityData.length > 0)
+              	    renderActivity();
+         };
+
 });
 

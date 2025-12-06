@@ -95,7 +95,7 @@ class RabbitAmqpConfig {
 
 
     @Bean
-    Consumer alertConsumer(@Qualifier("alertConnection") Connection connection,
+    Consumer alertRabbitConsumer(@Qualifier("alertConnection") Connection connection,
                            @Qualifier("alertQueue") Management.QueueInfo input,
                            java.util.function.Consumer<Alert> alertConsumer,
                            Converter<byte[], Alert> messageConverter){
@@ -135,7 +135,7 @@ class RabbitAmqpConfig {
     }
 
     @Bean
-    Consumer activityConsumer(@Qualifier("activityConnection") Connection connection,
+    Consumer activityRabbitConsumer(@Qualifier("activityConnection") Connection connection,
                            @Qualifier("activityQueue") Management.QueueInfo input,
                            java.util.function.Consumer<Activity> activityConsumer,
                            Converter<byte[], Activity> messageConverter){

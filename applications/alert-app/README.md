@@ -33,3 +33,22 @@ curl -X 'POST' \
   "event": "Testing"
 }'
 ```
+
+
+```shell
+curl -X 'POST' \
+  'http://localhost:8080/activities/activity' \
+  -H 'accept: */*' \
+  -H 'Content-Type: application/json' \
+  -d '{  "id": "03", "icon": "fa-shield-alt", "time": "07:15 PM", "activity": "Alarm System Turned OFF" }'
+  
+```
+
+```shell
+curl -X 'POST' \
+  'http://localhost:8080/activities/activity' \
+  -H 'accept: */*' \
+  -H 'Content-Type: application/json' \
+  -d '{ "id": "02", "icon": "fa-door-open", "time": "07:14 PM", "activity": "Front Door Opened" }'
+  
+```
