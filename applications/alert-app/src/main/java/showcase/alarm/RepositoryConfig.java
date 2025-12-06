@@ -4,6 +4,7 @@ import nyla.solutions.core.patterns.repository.memory.ListRepository;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import showcase.alarm.domains.Activity;
 import showcase.alarm.domains.Alert;
 
 import java.util.ArrayList;
@@ -14,9 +15,14 @@ public class RepositoryConfig {
     @Value("${repository.list.batch.size:10}")
     private int listBatchSize;
 
+    @Bean
+    ListRepository<Alert> listAlertRepository()
+    {
+        return new ListRepository<>(new ArrayList<>(listBatchSize),true);
+    }
 
     @Bean
-    ListRepository<Alert> listRepository()
+    ListRepository<Activity> listActivityRepository()
     {
         return new ListRepository<>(new ArrayList<>(listBatchSize),true);
     }

@@ -5,13 +5,12 @@ import com.rabbitmq.client.amqp.impl.AmqpEnvironmentBuilder;
 import lombok.extern.slf4j.Slf4j;
 import nyla.solutions.core.patterns.conversion.Converter;
 import nyla.solutions.core.util.Debugger;
-import org.bouncycastle.pqc.crypto.ExchangePair;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import showcase.alarm.domains.Activity;
 import showcase.alarm.domains.Alert;
-import tools.jackson.databind.ObjectMapper;
 
 @Configuration
 @Slf4j
@@ -34,8 +33,8 @@ class RabbitAmqpConfig {
     private String offsetName;
 
     //@Value("${spring.cloud.stream.bindings.input.destination:inputFilter}.${spring.cloud.stream.bindings.input.group}")
-    @Value("${stream.destination:alerts.alert}")
-    private String streamName;
+    @Value("${stream.destination.alerts:alerts.alert}")
+    private String alertStream;
 
     @Value("${stream.filter.sql}")
     private String sqlFilter;
@@ -45,11 +44,21 @@ class RabbitAmqpConfig {
 
 
     @Value("${spring.cloud.stream.bindings.input.destination:amq.topic}")
-    private String exchange;
+    private String alertExchange;
 
 
-    @Value("${stream.exchange.bind.key:#}")
-    private String bindRoutingKey;
+    @Value("${stream.alert.exchange.bind.key:#}")
+    private String alertBindRoutingKey;
+
+    @Value("${stream.activity.stream:activities.activity}")
+    private String activityStream;
+
+    @Value("${stream.activity.exchange:#}")
+    private String activityExchange;
+
+
+    @Value("${stream.activity.exchange.bind.key:#}")
+    private String activityBindRoutingKey;
 
     @Bean
     Environment amqpEnvironment()
@@ -63,8 +72,18 @@ class RabbitAmqpConfig {
                 .build();
     }
 
-    @Bean("inputConnection")
-    Connection amqpConnection(Environment environment)
+    @Bean("alertConnection")
+    Connection alertConnection(Environment environment)
+    {
+        return environment.connectionBuilder().host(host)
+                .name(applicationName)
+                .username(username)
+                .password(password)
+                .build();
+    }
+
+    @Bean("activityConnection")
+    Connection activityConnection(Environment environment)
     {
         return environment.connectionBuilder().host(host)
                 .name(applicationName)
@@ -76,10 +95,10 @@ class RabbitAmqpConfig {
 
 
     @Bean
-    Consumer consumer(@Qualifier("inputConnection") Connection connection,
-                      @Qualifier("input") Management.QueueInfo input,
-                      java.util.function.Consumer<Alert> alertConsumer,
-                      Converter<byte[], Alert> messageConverter){
+    Consumer alertConsumer(@Qualifier("alertConnection") Connection connection,
+                           @Qualifier("alertQueue") Management.QueueInfo input,
+                           java.util.function.Consumer<Alert> alertConsumer,
+                           Converter<byte[], Alert> messageConverter){
 
         log.info("input consumed with SQL '{}' from input stream {}",sqlFilter,input.name());
 
@@ -94,18 +113,6 @@ class RabbitAmqpConfig {
             builder = builder.filterValues(filterValue);
         }
 
-        /*
-        builder
-                .filter()
-                .sql(sqlFilter)
-                .stream()
-         */
-
-        /*
-        application Properties
-        content-type=application/json,
-        accountid=imani, level=critical, content-length=111} }
-         */
         return builder
                 .filter()
                 .sql(sqlFilter)
@@ -114,7 +121,7 @@ class RabbitAmqpConfig {
 
                     try {
                         //Processing input message
-                        log.info("Processing input: {}, msg id: {}", streamName, inputMessage.messageId());
+                        log.info("Processing input: {}, msg id: {}", alertStream, inputMessage.messageId());
                         alertConsumer.accept(messageConverter.convert(inputMessage.body()));
                     }
                     catch (Exception e)
@@ -128,40 +135,101 @@ class RabbitAmqpConfig {
     }
 
     @Bean
-    Converter<byte[], Alert> converter(ObjectMapper objectMapper)
-    {
-        return msg -> objectMapper.readValue(new String(msg), Alert.class);
+    Consumer activityConsumer(@Qualifier("activityConnection") Connection connection,
+                           @Qualifier("activityQueue") Management.QueueInfo input,
+                           java.util.function.Consumer<Activity> activityConsumer,
+                           Converter<byte[], Activity> messageConverter){
+
+        log.info("input consumed with SQL '{}' from input stream {}",sqlFilter,input.name());
+
+        var builder = connection.consumerBuilder()
+                .queue(input.name())
+                .stream()
+                .offset(ConsumerBuilder.StreamOffsetSpecification.valueOf(offsetName));
+
+        if(!filterValue.isEmpty())
+        {
+            log.info("Adding filter value: {}",filterValue);
+            builder = builder.filterValues(filterValue);
+        }
+
+        return builder
+                .filter()
+                .stream()
+                .builder().messageHandler((ctx,inputMessage) -> {
+
+                    try {
+                        //Processing input message
+                        log.info("Processing input: {}, msg id: {}", activityStream, inputMessage.messageId());
+                        activityConsumer.accept(messageConverter.convert(inputMessage.body()));
+                    }
+                    catch (Exception e)
+                    {
+                        log.error(Debugger.stackTrace(e));
+                        throw e;
+                    }
+
+                })
+                .build();
     }
 
 
-    @Bean("inputManagement")
-    Management amqpManagement(@Qualifier("inputConnection") Connection connection)
+    @Bean("alertManagement")
+    Management alertManagement(@Qualifier("alertConnection") Connection connection)
     {
         return connection.management();
     }
 
-    @Bean("input")
-    Management.QueueInfo inputQueue(@Qualifier("inputManagement") Management management)
+    @Bean("alertQueue")
+    Management.QueueInfo alertQueue(@Qualifier("alertManagement") Management management)
     {
 
         var queue = management
                 .queue()
-                .name(streamName)
+                .name(alertStream)
                 .stream()
                 .queue()
                 .declare();
 
-        management.exchange(exchange)
+        management.exchange(alertExchange)
                         .type(Management.ExchangeType.TOPIC)
                                 .declare();
 
-        management.binding().sourceExchange(exchange)
-                .destinationQueue(streamName)
-                .key(bindRoutingKey)
+        management.binding().sourceExchange(alertExchange)
+                .destinationQueue(alertStream)
+                .key(alertBindRoutingKey)
                 .bind();
 
          return queue;
 
+    }
+
+    @Bean("activityManagement")
+    Management amqpManagement(@Qualifier("activityConnection") Connection connection)
+    {
+        return connection.management();
+    }
+
+    @Bean("activityQueue")
+    Management.QueueInfo inputQueue(@Qualifier("activityManagement") Management management)
+    {
+        var queue = management
+                .queue()
+                .name(activityStream)
+                .stream()
+                .queue()
+                .declare();
+
+        management.exchange(activityExchange)
+                .type(Management.ExchangeType.TOPIC)
+                .declare();
+
+        management.binding().sourceExchange(activityExchange)
+                .destinationQueue(activityStream)
+                .key(activityBindRoutingKey)
+                .bind();
+
+        return queue;
     }
 
 }
