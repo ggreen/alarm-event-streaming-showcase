@@ -2,29 +2,29 @@ package showcase.streaming.source.generator.supplier;
 
 import nyla.solutions.core.util.Digits;
 import nyla.solutions.core.util.Text;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import showcase.streaming.domains.Alert;
+import showcase.streaming.source.generator.properties.AlertProperties;
 
 import java.time.LocalDateTime;
 import java.util.Date;
+import java.util.List;
 import java.util.function.Supplier;
 
 @Component
 public class AlertSupplier implements Supplier<Alert> {
 
+    private final String account;
+    private final List<String> events;
     private int idSequence;
     private final Digits digits = new Digits();
-    private final String [] levels = {"Critical", "High", "Medium","Low"};
-    private final String account;
-    private final String[] events;
+    private final List<String> levels;
 
-    public AlertSupplier(@Value("${generator.idSequence:0}") int idSequence,
-                         @Value("${generator.account}") String account,
-                         @Value("${generator.events}") String[] events) {
-        this.idSequence = idSequence;
-        this.account = account;
-        this.events = events;
+    public AlertSupplier(AlertProperties alertProperties) {
+        this.idSequence = alertProperties.getIdStartSequence();
+        this.account = alertProperties.getAccount();
+        this.events = alertProperties.getEvents();
+        this.levels = alertProperties.getLevels();
     }
 
     @Override
@@ -40,8 +40,8 @@ public class AlertSupplier implements Supplier<Alert> {
     }
 
     private String event() {
-        var index = digits.generateInteger(0,events.length-1);
-        return events[index];
+        var index = digits.generateInteger(0,events.size()-1);
+        return events.get(index);
     }
 
     private String time() {
@@ -54,7 +54,7 @@ public class AlertSupplier implements Supplier<Alert> {
     }
 
     private String level() {
-        var levelIndex = digits.generateInteger(0,levels.length-1);
-        return levels[levelIndex];
+        var levelIndex = digits.generateInteger(0,levels.size()-1);
+        return levels.get(levelIndex);
     }
 }

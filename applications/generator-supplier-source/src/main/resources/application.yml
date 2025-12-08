@@ -5,7 +5,7 @@ spring:
     name: "generator-supplier-source"
   cloud:
     function:
-      definition: jsonGeneratorSupplier
+      definition: alertSupplier|activitySupplier
     stream:
       function:
         bindings:
@@ -13,3 +13,17 @@ spring:
       bindings:
         output:
           destination: generator
+generator:
+  alert:
+    account: system
+    levels:
+      - "Critical"
+      - "High"
+      - "Medium"
+      - "Low"
+    events:
+    - Break-in Detected (Alarm Triggered)
+    - Garage Door Left Open for >10 min
+    -  Smoke Detector Battery Low
+    -  Front Door Tamper Detected
+    -  System Offline for 5 minutes
