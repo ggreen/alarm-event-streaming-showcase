@@ -72,6 +72,11 @@
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-stream</artifactId>
         </dependency>
+        <dependency>
+            <groupId>showcase.streaming.event</groupId>
+            <artifactId>domains</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
     </dependencies>
     <dependencyManagement>
         <dependencies>
