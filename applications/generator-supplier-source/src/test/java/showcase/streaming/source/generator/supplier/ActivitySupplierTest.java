@@ -30,7 +30,7 @@ class ActivitySupplierTest {
 
     @Test
     void errorWhenCsvReaderIsEmpty() {
-        when(csvReader.size()).thenReturn(0);
+        when(csvReader.isEmpty()).thenReturn(true);
 
         assertThrows(IllegalArgumentException.class, () -> new ActivitySupplier(idSequenceStart,csvReader));
     }

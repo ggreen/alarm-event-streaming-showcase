@@ -19,6 +19,9 @@ public class ActivitySupplier implements Supplier<Activity> {
 
     public ActivitySupplier(@Value("${generator.activity.id.start:0}") int idSequence,
                             CsvReader csvReader) {
+        if(csvReader.isEmpty())
+            throw new IllegalArgumentException("Csv Reader size must be > 0");
+
         this.idSequence = idSequence;
         this.csvReader = csvReader;
     }
