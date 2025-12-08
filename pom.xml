@@ -10,8 +10,10 @@
     <version>1.0.0</version>
     <name>alert-event-streaming-</name>
     <modules>
+        <module>components/domains</module>
         <module>applications/alert-app</module>
         <module>applications/http-mqtt-source</module>
+        <module>applications/generator-supplier-source</module>
     </modules>
     <build>
         <pluginManagement>

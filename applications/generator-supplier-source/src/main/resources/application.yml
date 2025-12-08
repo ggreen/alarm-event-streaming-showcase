@@ -1,0 +1,15 @@
+server:
+  port: 0
+spring:
+  application:
+    name: "generator-supplier-source"
+  cloud:
+    function:
+      definition: jsonGeneratorSupplier
+    stream:
+      function:
+        bindings:
+          jsonGeneratorSupplier-out-0: output
+      bindings:
+        output:
+          destination: generator
