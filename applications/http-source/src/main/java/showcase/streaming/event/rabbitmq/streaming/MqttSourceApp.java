@@ -6,6 +6,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 public class MqttSourceApp {
     public static void main(String[] args) {
-        SpringApplication.run(MqttSourceApp.class);
+        SpringApplication.run(MqttSourceApp.class,args);
     }
 }

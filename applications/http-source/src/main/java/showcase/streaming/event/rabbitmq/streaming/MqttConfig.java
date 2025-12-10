@@ -45,7 +45,6 @@ public class MqttConfig
     @Value("${mqtt.timeout:500}")
     private int timeout;
 
-    @Bean
     IMqttClient mqttClient() throws MqttException
     {
         var mqttClient = new MqttClient(connectionUrl, clientId, new MemoryPersistence());
@@ -63,7 +62,10 @@ public class MqttConfig
         return mqttClient;
     }
 
-    MessageChannel mqttChannel(MqttClient client) {
+    @Bean("publisher")
+    MessageChannel publisher() throws MqttException {
+        final IMqttClient client = mqttClient();
+
         return (message,timeout) ->
         {
             try {
@@ -74,8 +76,8 @@ public class MqttConfig
                 var userProperties = new ArrayList<UserProperty>();
 
                 for (var entry : httpHeaders.entrySet()) {
-                    var value = (String) entry.getValue();
-                    userProperties.add(new UserProperty(entry.getKey(), value));
+                    var value = entry.getValue();
+                    userProperties.add(new UserProperty(entry.getKey(), value.toString()));
                 }
 
                 String topic = httpHeaders.get(MessagingConstants.TOPIC_HEADER, String.class);

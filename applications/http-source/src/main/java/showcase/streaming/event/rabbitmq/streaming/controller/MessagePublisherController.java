@@ -3,6 +3,7 @@ package showcase.streaming.event.rabbitmq.streaming.controller;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.paho.mqttv5.common.MqttException;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.messaging.MessageChannel;
 import org.springframework.messaging.support.MessageBuilder;
@@ -12,11 +13,15 @@ import showcase.streaming.event.rabbitmq.streaming.constants.MessagingConstants;
 import java.util.Map;
 
 @RestController
-@RequiredArgsConstructor
 @Slf4j
 public class MessagePublisherController {
 
+
     private final MessageChannel publisher;
+
+    public MessagePublisherController(@Qualifier("publisher") MessageChannel publisher) {
+        this.publisher = publisher;
+    }
 
     @PostMapping("publisher")
     @ResponseStatus(HttpStatus.OK)

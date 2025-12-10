@@ -9,11 +9,11 @@ Start Rabbit
 Start MQTT 5 Source
 
 ```shell
-java -jar applications/http-mqtt-source/target/http-mqtt-source-0.0.2-SNAPSHOT.jar \
+java -jar applications/http-source/target/http-source-0.0.1-SNAPSHOT.jar \
   --mqtt.connectionUrl=tcp://localhost:1883 \
   --spring.application.name=http-mqtt-source \
   --mqtt.userName=guest \
-  --mqtt.userPassword=guest
+  --mqtt.userPassword=guest --spring.profiles.active=mqtt
 ```
 
 Start Alarm app for imani
@@ -38,7 +38,7 @@ java -jar applications/alert-app/target/alert-app-0.0.1-SNAPSHOT.jar --spring.ra
 
 ```shell
 curl -X 'POST' \
-  'http://localhost:8383/mqtt?topic=alerts' \
+  'http://localhost:8383/publisher?topic=alerts.alert' \
   -H 'accept: */*' \
   -H 'Content-Type: application/json' \
   -H "account: imani" \
@@ -48,23 +48,24 @@ curl -X 'POST' \
 
 ```shell
 curl -X 'POST' \
-  'http://localhost:8383/mqtt?topic=alerts' \
+  'http://localhost:8383/publisher?topic=alerts' \
+  -H 'accept: */*' \
+  -H 'Content-Type: application/json' \
+  -H "account: imani" \
+  -H "level: high" \
+  -d '{"id" : "03", "account" : "imani", "level" : "high", "time" : "7:00AM", "event" : "BUS Left!!" }'
+```
+
+
+```shell
+curl -X 'POST' \
+  'http://localhost:8383/publisher?topic=alerts' \
   -H 'accept: */*' \
   -H 'Content-Type: application/json' \
   -H "account: imani" \
   -H "level: critical" \
   -d '{"id" : "02", "account" : "imani", "level" : "critical", "time" : "7:00AM", "event" : "BUS COMING!!" }'
   
-```
-
-```shell
-curl -X 'POST' \
-  'http://localhost:8383/mqtt?topic=alerts' \
-  -H 'accept: */*' \
-  -H 'Content-Type: application/json' \
-  -H "account: imani" \
-  -H "level: high" \
-  -d '{"id" : "03", "account" : "imani", "level" : "high", "time" : "7:00AM", "event" : "BUS Left!!" }'
 ```
 
 
@@ -81,3 +82,10 @@ Only Critical
 open http:///localhost:8911
 ```
 
+Restart Apps
+
+Generator Activities
+
+```shell
+java -jar applications/generator-supplier-source/target/generator-supplier-source-0.0.1-SNAPSHOT.jar --spring.cloud.stream.bindings.input.producer.poller.fixed-delay=1 --spring.cloud.stream.poller.fixedDelay=1 --spring.cloud.stream.poller.max-messages=1000000
+```

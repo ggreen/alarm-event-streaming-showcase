@@ -1,5 +1,6 @@
 package showcase.streaming.source.generator.supplier;
 
+import lombok.extern.slf4j.Slf4j;
 import nyla.solutions.core.io.csv.CsvReader;
 import nyla.solutions.core.util.Digits;
 import nyla.solutions.core.util.Text;
@@ -11,6 +12,7 @@ import java.util.Date;
 import java.util.function.Supplier;
 
 @Component
+@Slf4j
 public class ActivitySupplier implements Supplier<Activity> {
     private int idSequence;
     private final Digits digits = new Digits();
@@ -29,17 +31,24 @@ public class ActivitySupplier implements Supplier<Activity> {
     @Override
     public Activity get() {
 
+
         if(idSequence >= csvReader.size())
             idSequence = 0;
 
+        log.info("idSequence: {}",idSequence);
+
         var row = csvReader.row(idSequence++);
 
-        return Activity.builder()
+        log.info("row: {}",row);
+
+        var  activity = Activity.builder()
                 .id(id())
                 .time(Text.format().formatDate("hh:mm a ss S ", new Date()))
                 .activity(row.get(0))
                 .icon(row.get(1))
                 .build();
+        log.info("activity: {}",activity);
+        return activity;
     }
 
     private String id() {

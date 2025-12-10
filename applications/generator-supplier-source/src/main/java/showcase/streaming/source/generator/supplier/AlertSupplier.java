@@ -9,6 +9,7 @@ import showcase.streaming.source.generator.properties.AlertProperties;
 import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Supplier;
 
 @Component
@@ -21,6 +22,19 @@ public class AlertSupplier implements Supplier<Alert> {
     private final List<String> levels;
 
     public AlertSupplier(AlertProperties alertProperties) {
+
+        Objects.requireNonNull(alertProperties,"alertProperties required");
+        Objects.requireNonNull(alertProperties.getAccount(),"Account required");
+        Objects.requireNonNull(alertProperties, "Alert Properties required");
+
+        if(alertProperties.getEvents() == null
+                || alertProperties.getLevels().isEmpty())
+            throw new NullPointerException("getEvents required");
+
+        if(alertProperties.getLevels() == null
+                || alertProperties.getEvents().isEmpty())
+            throw new NullPointerException("getEvents required");
+
         this.idSequence = alertProperties.getIdStartSequence();
         this.account = alertProperties.getAccount();
         this.events = alertProperties.getEvents();

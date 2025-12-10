@@ -5,14 +5,26 @@ spring:
     name: "generator-supplier-source"
   cloud:
     function:
-      definition: alertSupplier|activitySupplier
+      definition: alertSupplier;activitySupplier
     stream:
       function:
         bindings:
-          jsonGeneratorSupplier-out-0: output
+          alertSupplier-out-0: alert
+          activitySupplier-out-0: activity
       bindings:
-        output:
-          destination: generator
+        alert:
+          destination: alerts.alert
+        activity:
+          destination: activities.activity
+      rabbit:
+        bindings:
+          alert:
+            producer:
+              producerType: STREAM_ASYNC
+          activity:
+            producer:
+              producerType: STREAM_ASYNC
+
 generator:
   alert:
     account: system

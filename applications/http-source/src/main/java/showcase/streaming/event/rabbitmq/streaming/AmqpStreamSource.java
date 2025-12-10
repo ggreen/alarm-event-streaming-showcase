@@ -18,9 +18,6 @@ import java.nio.charset.StandardCharsets;
 @Profile("amqp1.0")
 public class AmqpStreamSource {
 
-    @Value("${spring.cloud.stream.bindings.output.destination}")
-    private String topicExchange;
-
     @Value("${spring.application.name}")
     private String applicationName;
 
@@ -30,7 +27,7 @@ public class AmqpStreamSource {
     @Value("${spring.rabbitmq.host:localhost}")
     private String host;
 
-    @Value("${spring.application.name:http-mqtt-source}")
+    @Value("${spring.application.name:http-source}")
     private String name;
 
     @Value("${spring.rabbitmq.username:guest}")
@@ -39,7 +36,7 @@ public class AmqpStreamSource {
     @Value("${spring.rabbitmq.password:guest}")
     private String password;
 
-    @Value("${spring.cloud.stream.bindings.output.destination:accounts}")
+    @Value("${spring.cloud.stream.bindings.output.destination}")
     private String streamName;
 
     @Value("${spring.cloud.stream.default.contentType:application/json}")
@@ -52,9 +49,7 @@ public class AmqpStreamSource {
     @Value("${source.amqp.filter.property.value}")
     private String filterValue;
 
-    private
-
-    @Bean
+    @Bean("publisher")
     MessageChannel publisher(Connection connection, Management.QueueInfo streamInfo)
     {
         var publisher =
@@ -63,7 +58,7 @@ public class AmqpStreamSource {
                         .queue(streamInfo.name())
                         .build();
 
-        MessageChannel sender = (message,timeout) -> {
+        return (message,timeout) -> {
             String body = (String)message.getPayload();
             var msg = publisher
                     .message(body.getBytes(StandardCharsets.UTF_8))
@@ -72,11 +67,9 @@ public class AmqpStreamSource {
 
             publisher.publish(msg, context -> {});
 
-            log.info("published {}:{}", filterProperty,filterValue);
+            log.info("published {}:{} body:{}", filterProperty,filterValue,body);
             return true;
         };
-
-        return  sender;
     }
 
     @Bean
