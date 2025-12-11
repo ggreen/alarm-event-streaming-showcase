@@ -22,13 +22,16 @@ import java.util.concurrent.ThreadFactory;
 public class ActivityController {
 
     @Value("${alert.refresh.rateSeconds:5}")
-    private long refreshRateSecs = 5;
+    private long refreshRateSecs;
+
+    @Value("${alert.refresh.threadCount:5}")
+    private int threadCount;
     private final ThreadFactory factory = Executors.defaultThreadFactory();
     private final ListRepository<Activity> repository;
 
     @GetMapping("activity")
     public Flux<ServerSentEvent<Iterable<Activity>>> accounts() {
-        var scheduler = Schedulers.newParallel(5,factory);
+        var scheduler = Schedulers.newParallel(threadCount,factory);
         return Flux.interval(Duration.ofSeconds(refreshRateSecs),scheduler)
                 .map(sequence -> ServerSentEvent.<Iterable<Activity>> builder()
                         .data(repository.findAll())

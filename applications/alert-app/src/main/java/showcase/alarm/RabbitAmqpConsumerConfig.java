@@ -14,7 +14,7 @@ import showcase.alarm.domains.Alert;
 
 @Configuration
 @Slf4j
-class RabbitAmqpConfig {
+class RabbitAmqpConsumerConfig {
 
     @Value("${spring.application.name}")
     private String applicationName;
@@ -39,8 +39,14 @@ class RabbitAmqpConfig {
     @Value("${stream.filter.sql}")
     private String sqlFilter;
 
-    @Value("${stream.filter.value:}")
-    private String filterValue;
+    @Value("${stream.alert.filter.value:}")
+    private String alertFilterValue;
+
+    @Value("${stream.activity.filter.value:}")
+    private String activityFilterValue;
+
+    @Value("${stream.activity.filter.name:}")
+    private String activityFilterPropertyName;
 
 
     @Value("${spring.cloud.stream.bindings.input.destination:amq.topic}")
@@ -59,6 +65,7 @@ class RabbitAmqpConfig {
 
     @Value("${stream.activity.exchange.bind.key:#}")
     private String activityBindRoutingKey;
+
 
     @Bean
     Environment amqpEnvironment()
@@ -107,10 +114,10 @@ class RabbitAmqpConfig {
                 .stream()
                 .offset(ConsumerBuilder.StreamOffsetSpecification.valueOf(offsetName));
 
-        if(!filterValue.isEmpty())
+        if(!alertFilterValue.isEmpty())
         {
-            log.info("Adding filter value: {}",filterValue);
-            builder = builder.filterValues(filterValue);
+            log.info("Adding filter value: {}", alertFilterValue);
+            builder = builder.filterValues(alertFilterValue);
         }
 
         return builder
@@ -140,24 +147,25 @@ class RabbitAmqpConfig {
                            java.util.function.Consumer<Activity> activityConsumer,
                            Converter<byte[], Activity> messageConverter){
 
-        log.info("input consumed with SQL '{}' from input stream {}",sqlFilter,input.name());
+        log.info("Activities  from input stream {}", input.name());
 
         var builder = connection.consumerBuilder()
                 .queue(input.name())
                 .stream()
                 .offset(ConsumerBuilder.StreamOffsetSpecification.valueOf(offsetName));
 
-        if(!filterValue.isEmpty())
+        if(!activityFilterPropertyName.isEmpty() && !activityFilterValue.isEmpty())
         {
-            log.info("Adding filter value: {}",filterValue);
-            builder = builder.filterValues(filterValue);
+            log.info("Adding activity filter value: {}", activityFilterValue);
+            builder = builder
+                    .filter()
+                    .property(activityFilterPropertyName,activityFilterValue)
+                    .stream();
+
         }
 
         return builder
-                .filter()
-                .stream()
                 .builder().messageHandler((ctx,inputMessage) -> {
-
                     try {
                         //Processing input message
                         log.info("Processing input: {}, msg id: {}", activityStream, inputMessage.messageId());

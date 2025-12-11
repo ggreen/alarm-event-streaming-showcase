@@ -10,13 +10,14 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import org.springframework.messaging.MessageChannel;
+import showcase.streaming.event.rabbitmq.streaming.constants.MessagingConstants;
 
 import java.nio.charset.StandardCharsets;
 
 @Configuration
 @Slf4j
 @Profile("amqp1.0")
-public class AmqpStreamSource {
+public class Amqp1_0SupplierConfig {
 
     @Value("${spring.application.name}")
     private String applicationName;
@@ -46,8 +47,6 @@ public class AmqpStreamSource {
     @Value("${source.amqp.filter.property.name}")
     private String filterProperty;
 
-    @Value("${source.amqp.filter.property.value}")
-    private String filterValue;
 
     @Bean("publisher")
     MessageChannel publisher(Connection connection, Management.QueueInfo streamInfo)
@@ -60,6 +59,7 @@ public class AmqpStreamSource {
 
         return (message,timeout) -> {
             String body = (String)message.getPayload();
+            String filterValue = message.getHeaders().get(MessagingConstants.TOPIC_HEADER, String.class);
             var msg = publisher
                     .message(body.getBytes(StandardCharsets.UTF_8))
                     .contentType(contentType)

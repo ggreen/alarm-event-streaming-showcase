@@ -9,6 +9,9 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import showcase.alarm.domains.Activity;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.verify;
+
 @ExtendWith(MockitoExtension.class)
 class ActivityConsumerTest {
 
@@ -25,5 +28,7 @@ class ActivityConsumerTest {
     @Test
     void accept() {
         subject.accept(activity);
+
+        verify(repository).save(any());
     }
 }

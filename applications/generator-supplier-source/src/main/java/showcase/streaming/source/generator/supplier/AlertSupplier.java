@@ -1,5 +1,6 @@
 package showcase.streaming.source.generator.supplier;
 
+import lombok.extern.slf4j.Slf4j;
 import nyla.solutions.core.util.Digits;
 import nyla.solutions.core.util.Text;
 import org.springframework.stereotype.Component;
@@ -13,6 +14,7 @@ import java.util.Objects;
 import java.util.function.Supplier;
 
 @Component
+@Slf4j
 public class AlertSupplier implements Supplier<Alert> {
 
     private final String account;
@@ -44,13 +46,16 @@ public class AlertSupplier implements Supplier<Alert> {
     @Override
     public Alert get() {
 
-        return Alert.builder().id(id())
+        var alert = Alert.builder().id(id())
                 .level(level())
                 .account(account)
                 .time(time())
                 .dateTime(LocalDateTime.now())
                 .event(event())
                 .build();
+
+        log.info("Generator alert: {}",alert);
+        return alert;
     }
 
     private String event() {
