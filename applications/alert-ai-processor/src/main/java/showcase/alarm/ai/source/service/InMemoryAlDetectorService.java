@@ -39,11 +39,11 @@ public class InMemoryAlDetectorService implements AlertDetectorService{
 
     @Override
     public synchronized List<Alert> checkForAlerts() {
-        log.info("Checking for alerts");
         var activities = (List<Activity>) activityRepository.findAll();
-        log.info("Activities: {}",activities);
+        log.info("Checking if activities size:{} > {} (min batch size) ",
+                activities.size(),batchCount);
 
-        if((activities).size() > batchCount)
+        if(activities.size() > batchCount)
         {
             var alerts = this.modelInference.determineAlert(activities);
 

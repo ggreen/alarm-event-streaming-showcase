@@ -4,8 +4,8 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class ProcessorAlertAiApp {
+public class AlertAiApp {
     public static void main(String[] args) {
-        SpringApplication.run(ProcessorAlertAiApp.class,args);
+        SpringApplication.run(AlertAiApp.class,args);
     }
 }

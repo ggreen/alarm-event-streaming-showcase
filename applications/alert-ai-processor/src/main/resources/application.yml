@@ -3,6 +3,9 @@ server:
 spring:
   application:
     name: alert-ai-processor
+  http:
+    client:
+      read-timeout: 60s
   ai:
     model:
       embedding: ollama
@@ -15,7 +18,8 @@ spring:
           model: llama3.1:8b
   cloud:
     function:
-      definition: alertAiProcessor;checkForAlerts
+      definition: alertAiProcessor
+#      ;checkForAlerts
     stream:
       default:
         contentType: "application/json"
