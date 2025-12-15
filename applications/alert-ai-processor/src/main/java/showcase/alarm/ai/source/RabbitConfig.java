@@ -91,7 +91,7 @@ public class RabbitConfig {
                     }
 
                     @Override
-                    public com.rabbitmq.stream.Message fromMessage(org.springframework.amqp.core.Message message) throws MessageConversionException {gi
+                    public com.rabbitmq.stream.Message fromMessage(org.springframework.amqp.core.Message message) throws MessageConversionException {
 
                         var streamBuilder = rabbitStreamTemplate.messageBuilder();
                         var applicationProperties = streamBuilder.applicationProperties();
