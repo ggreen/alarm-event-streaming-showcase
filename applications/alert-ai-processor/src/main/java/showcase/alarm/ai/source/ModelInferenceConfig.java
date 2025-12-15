@@ -4,11 +4,14 @@ import io.netty.channel.ChannelOption;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.model.ChatModel;
+import org.springframework.ai.chat.prompt.ChatOptions;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestClientCustomizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.http.client.reactive.ReactorClientHttpConnector;
+import org.springframework.web.client.RestClient;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.netty.http.client.HttpClient;
 import showcase.alarm.ai.source.service.ai.AlertsModelInference;
@@ -39,7 +42,12 @@ public class ModelInferenceConfig {
             Door Opened with No Door Closed is a MEDIUM Alert
             """;
     // Define a long timeout, e.g., 3 minutes (180 seconds)
-    private static final Duration OLLAMA_READ_TIMEOUT = Duration.ofMinutes(5);
+
+    @Value("${ai.timeouts.seconds.connection}")
+    private int connectionTimeoutSeconds;
+
+    @Value("${ai.timeouts.seconds.read}")
+    private int readTimeoutSeconds;
 
     @Bean
     public RestClientCustomizer customRestClientTimeout() {
@@ -47,8 +55,8 @@ public class ModelInferenceConfig {
             SimpleClientHttpRequestFactory factory = new SimpleClientHttpRequestFactory();
 
             // Set Connect and Read timeouts
-            factory.setConnectTimeout(Duration.ofSeconds(10));
-            factory.setReadTimeout(Duration.ofSeconds(60));
+            factory.setConnectTimeout(Duration.ofSeconds(connectionTimeoutSeconds));
+            factory.setReadTimeout(Duration.ofSeconds(readTimeoutSeconds));
 
             restClientBuilder.requestFactory(factory);
         };
@@ -60,15 +68,15 @@ public class ModelInferenceConfig {
         HttpClient httpClient = HttpClient.create()
                 // 1. Connection Timeout (time to establish connection)
                 // Netty ChannelOption is in milliseconds
-                .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 10000) // 10 seconds
+                .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, connectionTimeoutSeconds*60) // 10 seconds
 
                 // 2. Response Timeout (time to receive the full response)
-                .responseTimeout(Duration.ofSeconds(60)) // 60 seconds
+                .responseTimeout(Duration.ofSeconds(readTimeoutSeconds)) // 60 seconds
 
                 // 3. Optional: Fine-grained Read/Write timeouts (time between data chunks)
                 .doOnConnected(conn ->
                         conn.addHandlerLast(
-                                new io.netty.handler.timeout.ReadTimeoutHandler(30) // 30 seconds inactivity
+                                new io.netty.handler.timeout.ReadTimeoutHandler(readTimeoutSeconds) // 30 seconds inactivity
                         )
                 );
 
@@ -78,7 +86,11 @@ public class ModelInferenceConfig {
 
     @Bean
     ChatClient chatClient(ChatModel chatModel){
-        return ChatClient.create(chatModel);
+        return ChatClient
+                .builder(chatModel)
+                .defaultOptions(ChatOptions.builder()
+                        .build())
+                .build();
     }
 
     @Bean

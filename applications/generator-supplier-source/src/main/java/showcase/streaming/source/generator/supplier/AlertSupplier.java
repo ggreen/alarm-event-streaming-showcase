@@ -50,7 +50,6 @@ public class AlertSupplier implements Supplier<Alert> {
                 .level(level())
                 .account(account)
                 .time(time())
-                .dateTime(LocalDateTime.now())
                 .event(event())
                 .build();
 

@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.function.Supplier;
 
 @Configuration
-public class AlertSupplierConfig {
+public class SupplierConfig {
 
     @Value("${alerts.header.names.account}")
     private String accountHeaderName;

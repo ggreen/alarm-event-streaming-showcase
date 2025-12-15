@@ -275,5 +275,5 @@ curl -X 'POST' \
   'http://localhost:8555/publisher?topic=imani' \
   -H 'accept: */*' \
   -H 'Content-Type: application/json' \
-  -d '{ "icon" : "fa-box", "time" : "05:01 PM", "activity" : "Refrigerator Door Closed" '
+  -d '{ "icon" : "fa-box", "time" : "05:01 PM", "activity" : "Refrigerator Door Closed" }'
 ```

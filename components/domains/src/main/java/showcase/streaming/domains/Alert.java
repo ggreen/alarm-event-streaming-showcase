@@ -9,6 +9,5 @@ public record Alert(String id,
                     String account,
                     String level,
                     String time,
-                    LocalDateTime dateTime,
                     String event) {
 }
