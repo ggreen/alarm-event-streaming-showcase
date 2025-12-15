@@ -11,6 +11,7 @@ import lombok.Builder;
  */
 @Builder
 public record Activity(String id,
+                       String account,
                        String icon,
                        String time,
                        String activity) {

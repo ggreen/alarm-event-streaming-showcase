@@ -11,7 +11,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.http.client.reactive.ReactorClientHttpConnector;
-import org.springframework.web.client.RestClient;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.netty.http.client.HttpClient;
 import showcase.alarm.ai.source.service.ai.AlertsModelInference;
@@ -25,7 +24,7 @@ public class ModelInferenceConfig {
 
     private static final String prompt = """
             Given the following activities, identify alerts,
-            For each alert response with the "level" with values of (CRITICAL, HIGH, MEDIUM, Low),
+            For each alert response with the "level" with values of (critical, high, medium, low),
             the time and the event which contains why you believe this is an alert
             
             ONLY RESPONSE WITH Json Object fields level, account, time, and event

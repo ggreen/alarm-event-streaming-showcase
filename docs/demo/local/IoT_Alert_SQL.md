@@ -201,7 +201,7 @@ DO NOT alert if Alarm System Turned On
 
 
 Given the following activities, identify alerts,
-For each alert response with the "level" with values of (CRITICAL, HIGH, MEDIUM, Low),
+For each alert response with the "level" with values of (critical, high, medium, low),
 the time and the event which contains why you believe this is an alert
 
 ONLY RESPONSE the Json Object fields level, time, and event
@@ -233,47 +233,47 @@ curl -X 'POST' \
   'http://localhost:8555/publisher?topic=imani' \
   -H 'accept: */*' \
   -H 'Content-Type: application/json' \
-  -d '{ "icon" : "fa-shield-alt", "time" : "07:15 PM", "activity" : "Alarm System Turned OFF Successfully" }'
+  -d '{ "icon" : "fa-shield-alt", "account" : "imani", "time" : "07:15 PM", "activity" : "Alarm System Turned OFF Successfully" }'
 
 curl -X 'POST' \
   'http://localhost:8555/publisher?topic=imani' \
   -H 'accept: */*' \
   -H 'Content-Type: application/json' \
-  -d '{ "icon" : "fa-door-open", "time" : "07:14 PM", "activity" : "Front Door Opened" }'
+  -d '{ "icon" : "fa-door-open",  "account" : "imani", "time" : "07:14 PM", "activity" : "Front Door Opened" }'
 
 curl -X 'POST' \
   'http://localhost:8555/publisher?topic=imani' \
   -H 'accept: */*' \
   -H 'Content-Type: application/json' \
-  -d '{ "icon" : "fa-temperature-low", "time" : "06:55 PM", "activity" : "Thermostat Set to 68°F (Cool)" }' 
+  -d '{ "icon" : "fa-temperature-low",  "account" : "imani", "time" : "06:55 PM", "activity" : "Thermostat Set to 68°F (Cool)" }' 
    
 curl -X 'POST' \
   'http://localhost:8555/publisher?topic=imani' \
   -H 'accept: */*' \
   -H 'Content-Type: application/json' \
-  -d '{ "icon" : "fa-door-open", "time" : "06:30 PM", "activity" : "Garage Door Opened" }'
+  -d '{ "icon" : "fa-door-open",  "account" : "imani", "time" : "06:30 PM", "activity" : "Garage Door Opened" }'
   
 curl -X 'POST' \
   'http://localhost:8555/publisher?topic=imani' \
   -H 'accept: */*' \
   -H 'Content-Type: application/json' \
-  -d '{ "icon" : "fa-shield-alt", "time" : "06:00 PM", "activity" : "Alarm System Turned ON (Away)" }'
+  -d '{ "icon" : "fa-shield-alt",  "account" : "imani", "time" : "06:00 PM", "activity" : "Alarm System Turned ON (Away)" }'
   
 curl -X 'POST' \
   'http://localhost:8555/publisher?topic=imani' \
   -H 'accept: */*' \
   -H 'Content-Type: application/json' \
-  -d '{ "icon" : "fa-temperature-high", "time" : "05:45 PM", "activity" : "Thermostat Set to 72°F (Heat)" }'
+  -d '{ "icon" : "fa-temperature-high",  "account" : "imani", "time" : "05:45 PM", "activity" : "Thermostat Set to 72°F (Heat)" }'
 
 curl -X 'POST' \
   'http://localhost:8555/publisher?topic=imani' \
   -H 'accept: */*' \
   -H 'Content-Type: application/json' \
-  -d '{ "icon" : "fa-box", "time" : "05:00 PM", "activity" : "Refrigerator Door Ajar" }'
+  -d '{ "icon" : "fa-box",  "account" : "imani", "time" : "05:00 PM", "activity" : "Refrigerator Door Ajar" }'
   
 curl -X 'POST' \
   'http://localhost:8555/publisher?topic=imani' \
   -H 'accept: */*' \
   -H 'Content-Type: application/json' \
-  -d '{ "icon" : "fa-box", "time" : "05:01 PM", "activity" : "Refrigerator Door Closed" }'
+  -d '{ "icon" : "fa-box", "account" : "imani", "time" : "05:01 PM", "activity" : "Refrigerator Door Closed" }'
 ```

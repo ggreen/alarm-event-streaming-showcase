@@ -32,7 +32,14 @@ public class AlertAiProcessor implements Function<Activity,List<Message<Alert>>>
         var alerts = detectorService.detectAlerts(activity);
 
         if(alerts != null && !alerts.isEmpty())
-            return alerts.stream().map( alert -> MessageBuilder.withPayload(alert).build())
+            return alerts.stream().map( alert -> MessageBuilder.withPayload(alert)
+                            .setHeader("account",
+                                    activity.account())
+                            .setHeader("level",
+                                    alert.level())
+                            .setHeader("contentType","application/json")
+                            .build())
+
                     .toList();
 
         return null;

@@ -1,11 +1,13 @@
 package showcase.alarm.ai.source;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.rabbitmq.stream.MessageBuilder;
 import com.rabbitmq.stream.OffsetSpecification;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import nyla.solutions.core.util.Text;
 import org.springframework.amqp.rabbit.listener.MessageListenerContainer;
+import org.springframework.amqp.support.converter.MessageConversionException;
 import org.springframework.cloud.function.context.config.JsonMessageConverter;
 import org.springframework.cloud.function.json.JacksonMapper;
 import org.springframework.cloud.stream.config.ListenerContainerCustomizer;
@@ -19,12 +21,13 @@ import org.springframework.messaging.MessageHeaders;
 import org.springframework.messaging.converter.MessageConverter;
 import org.springframework.rabbit.stream.listener.StreamListenerContainer;
 import org.springframework.rabbit.stream.producer.RabbitStreamTemplate;
+import org.springframework.rabbit.stream.support.StreamMessageProperties;
+import org.springframework.rabbit.stream.support.converter.StreamMessageConverter;
 
 @Configuration
 @Slf4j
 public class RabbitConfig {
 
-    private String streamName;
 
     @Bean
     ListenerContainerCustomizer<MessageListenerContainer> customizer() {
@@ -76,10 +79,35 @@ public class RabbitConfig {
     @Bean
     ProducerMessageHandlerCustomizer<MessageHandler> handlerCustomizer() {
         return (hand, dest) -> {
-            RabbitStreamMessageHandler handler = (RabbitStreamMessageHandler) hand;
-            handler.setConfirmTimeout(5000);
-            var rabbitStreamTemplate = ((RabbitStreamTemplate) handler.getStreamOperations());
-//            rabbitStreamTemplate.setMessageConverter(messageConverter);
+            if(hand instanceof RabbitStreamMessageHandler handler)
+            {
+                var rabbitStreamTemplate = ((RabbitStreamTemplate) handler.getStreamOperations());
+                handler.setConfirmTimeout(5000);
+
+                rabbitStreamTemplate.setStreamConverter(new StreamMessageConverter() {
+                    @Override
+                    public org.springframework.amqp.core.Message toMessage(Object object, StreamMessageProperties messageProperties) throws MessageConversionException {
+                        return null;
+                    }
+
+                    @Override
+                    public com.rabbitmq.stream.Message fromMessage(org.springframework.amqp.core.Message message) throws MessageConversionException {
+                        //this is ugly
+//                        var msgString = new String(message.getBody());
+
+                        var streamBuilder = rabbitStreamTemplate.messageBuilder();
+                        var applicationProperties = streamBuilder.applicationProperties();
+
+                        //copy headers
+                        for(var headerEntry : message.getMessageProperties()
+                                    .getHeaders().entrySet())
+                            applicationProperties.entry(headerEntry.getKey(),String.valueOf(headerEntry.getValue()));
+
+                        return applicationProperties.messageBuilder()
+                                .addData(message.getBody()).build();
+                    }
+                });
+            }
         };
     }
 
