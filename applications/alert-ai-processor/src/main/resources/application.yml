@@ -14,9 +14,38 @@ spring:
           format: "json"
           model: llama3.1:8b
   cloud:
-    #    function.definition: calculateFavoritesConsumer;orderConsumer
     function:
       definition: alertAiProcessor;checkForAlerts
+    stream:
+      default:
+        contentType: "application/json"
+      bindings:
+        alertAiProcessor-in-0:
+          destination: activities.activity
+          group: activities.activity
+          consumer:
+            concurrency: 1
+        alertAiProcessor-out-0:
+          destination: alerts.alert
+          group: alerts.alert
+        checkForAlerts-out-0:
+          destination: alerts.alert
+          group: alerts.alert
+      rabbit:
+        bindings:
+          alertAiProcessor-in-0:
+            consumer:
+              containerType: STREAM
+              queueNameGroupOnly: true
+          alertAiProcessor-out-0:
+            producer:
+              producerType: STREAM_SYNC
+              queueNameGroupOnly: true
+          checkForAlerts-out-0:
+            producer:
+              producerType: STREAM_SYNC
+              queueNameGroupOnly: true
+#-----------------------
 alerts:
   inference:
     batch: 5
