@@ -14,6 +14,7 @@
         <module>applications/alert-app</module>
         <module>applications/http-source</module>
         <module>applications/generator-supplier-source</module>
+        <module>applications/alert-ai-processor</module>
     </modules>
     <build>
         <pluginManagement>

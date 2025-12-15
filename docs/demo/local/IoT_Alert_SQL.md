@@ -169,3 +169,55 @@ curl -X 'POST' \
   "activity" : "Garage Door Closed"
 }'
 ```
+
+
+Given the following activities, identify alerts, 
+For each alert response with the "level" with values of (CRITICAL, HIGH, MEDIUM, Low),
+the time and the event which contains why you believe this is an alert
+
+ONLY RESPONSE the Json Object fields level, time, and event
+
+```json
+{ "icon" : "fa-shield-alt", "time" : "07:15 PM", "activity" : "Alarm System Turned OFF" },
+{ "icon" : "fa-door-open", "time" : "07:14 PM", "activity" : "Front Door Opened" },
+{ "icon" : "fa-door-closed"", "time" : "07:14 PM"", "activity" : "Front Door Closed" },
+{ "icon" : "fa-temperature-low", "time" : "06:55 PM", "activity" : "Thermostat Set to 68°F (Cool)" },
+{ "icon" : "fa-door-open", "time" : "06:30 PM", "activity" : "Garage Door Opened" },
+{ "icon" : "fa-door-closed", "time" : "06:31 PM", "activity" : "Garage Door Closed" },
+{ "icon" : "fa-shield-alt", "time" : "06:00 PM", "activity" : "Alarm System Turned ON (Away)" },
+{ "icon" : "fa-temperature-high", "time" : "05:45 PM", "activity" : "Thermostat Set to 72°F (Heat)" },
+{ "icon" : "fa-box", "time" : "05:00 PM", "activity" : "Refrigerator Door Ajar" },
+{ "icon" : "fa-box", "time" : "05:01 PM", "activity" : "Refrigerator Door Closed" }
+```
+
+Use Context Below
+CONTEXT: 
+DO NOT alert if Opened door or Garage Door AND the door is closed at a later time
+DO NOT alert if Alarm System Turned On
+
+-------------------------------------
+
+
+Given the following activities, identify alerts,
+For each alert response with the "level" with values of (CRITICAL, HIGH, MEDIUM, Low),
+the time and the event which contains why you believe this is an alert
+
+ONLY RESPONSE the Json Object fields level, time, and event
+
+```json
+[{ "icon" : "fa-shield-alt", "time" : "07:15 PM", "activity" : "Alarm System Turned OFF Successfully" }, 
+{ "icon" : "fa-door-open", "time" : "07:14 PM", "activity" : "Front Door Opened" },
+{ "icon" : "fa-temperature-low", "time" : "06:55 PM", "activity" : "Thermostat Set to 68°F (Cool)" },
+{ "icon" : "fa-door-open", "time" : "06:30 PM", "activity" : "Garage Door Opened" },
+{ "icon" : "fa-shield-alt", "time" : "06:00 PM", "activity" : "Alarm System Turned ON (Away)" },
+{ "icon" : "fa-temperature-high", "time" : "05:45 PM", "activity" : "Thermostat Set to 72°F (Heat)" },
+{ "icon" : "fa-box", "time" : "05:00 PM", "activity" : "Refrigerator Door Ajar" },
+{ "icon" : "fa-box", "time" : "05:01 PM", "activity" : "Refrigerator Door Closed" }]
+```
+
+Use Context Below
+CONTEXT:
+DO NOT alert when Opened door or Garage Door AND the door is closed at a later time
+DO NOT alert when Alarm System Turned On
+DO NOT alert when Alarm System Turned OFF Successfully
+Door Opened with No Door Closed is a MEDIUM Alert

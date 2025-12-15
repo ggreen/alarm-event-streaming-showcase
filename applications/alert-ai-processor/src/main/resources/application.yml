@@ -1,0 +1,26 @@
+server:
+  port: 0
+spring:
+  application:
+    name: alert-ai-processor
+  ai:
+    model:
+      embedding: ollama
+      chat: ollama
+    ollama:
+      base-url: http://localhost:11434
+      chat:
+        options:
+          format: "json"
+          model: llama3.1:8b
+  cloud:
+    #    function.definition: calculateFavoritesConsumer;orderConsumer
+    function:
+      definition: alertAiProcessor;checkForAlerts
+alerts:
+  inference:
+    batch: 5
+  header:
+    names:
+      account: "account"
+      level: "level"
