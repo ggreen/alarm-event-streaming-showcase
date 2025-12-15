@@ -37,7 +37,9 @@ document.addEventListener('DOMContentLoaded', () => {
     function renderAlerts() {
         alertsData.forEach(alert => {
 
-            const existingRow = document.getElementById(alert.id);
+            var alertRowId = "alertRow"+alert.id;
+
+            const existingRow = document.getElementById(alertRowId);
 
             if (existingRow) {
                 // Optional: Update the existing row instead of skipping
@@ -45,7 +47,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             const row = alertsTableBody.insertRow();
-            row.id = alert.id;
+            row.id = alertRowId;
             const level = alert.level.toLowerCase();
 
             // Cell 1: Level Tag
@@ -68,14 +70,16 @@ document.addEventListener('DOMContentLoaded', () => {
     function renderActivity() {
         activityData.forEach(activity => {
 
-         const existingRow = document.getElementById(activity.id);
+
+         var activityRowId = "activityRow"+activity.id;
+         const existingRow = document.getElementById(activityRowId);
 
          if (existingRow) {
             return; //skip
          }
 
          const row = activityTableBody.insertRow();
-         row.id = activity.id;
+         row.id = activityRowId;
 
          // Cell 1: Icon
          row.insertCell().innerHTML = `<div class="activity-icon"><i class="fas ${activity.icon}"></i></div>`;
