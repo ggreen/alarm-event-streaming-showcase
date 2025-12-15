@@ -119,6 +119,8 @@ java -jar applications/http-source/target/http-source-0.0.1-SNAPSHOT.jar \
 }
 ```
 
+Publish Activity
+
 ```shell
 curl -X 'POST' \
   'http://localhost:8555/publisher?topic=imani' \
@@ -221,3 +223,57 @@ DO NOT alert when Opened door or Garage Door AND the door is closed at a later t
 DO NOT alert when Alarm System Turned On
 DO NOT alert when Alarm System Turned OFF Successfully
 Door Opened with No Door Closed is a MEDIUM Alert
+
+
+----------------------
+
+
+```shell
+curl -X 'POST' \
+  'http://localhost:8555/publisher?topic=imani' \
+  -H 'accept: */*' \
+  -H 'Content-Type: application/json' \
+  -d '{ "icon" : "fa-shield-alt", "time" : "07:15 PM", "activity" : "Alarm System Turned OFF Successfully" }'
+
+curl -X 'POST' \
+  'http://localhost:8555/publisher?topic=imani' \
+  -H 'accept: */*' \
+  -H 'Content-Type: application/json' \
+  -d '{ "icon" : "fa-door-open", "time" : "07:14 PM", "activity" : "Front Door Opened" }'
+
+curl -X 'POST' \
+  'http://localhost:8555/publisher?topic=imani' \
+  -H 'accept: */*' \
+  -H 'Content-Type: application/json' \
+  -d '{ "icon" : "fa-temperature-low", "time" : "06:55 PM", "activity" : "Thermostat Set to 68°F (Cool)" }' 
+   
+curl -X 'POST' \
+  'http://localhost:8555/publisher?topic=imani' \
+  -H 'accept: */*' \
+  -H 'Content-Type: application/json' \
+  -d '{ "icon" : "fa-door-open", "time" : "06:30 PM", "activity" : "Garage Door Opened" }'
+  
+curl -X 'POST' \
+  'http://localhost:8555/publisher?topic=imani' \
+  -H 'accept: */*' \
+  -H 'Content-Type: application/json' \
+  -d '{ "icon" : "fa-shield-alt", "time" : "06:00 PM", "activity" : "Alarm System Turned ON (Away)" }'
+  
+curl -X 'POST' \
+  'http://localhost:8555/publisher?topic=imani' \
+  -H 'accept: */*' \
+  -H 'Content-Type: application/json' \
+  -d '{ "icon" : "fa-temperature-high", "time" : "05:45 PM", "activity" : "Thermostat Set to 72°F (Heat)" }'
+
+curl -X 'POST' \
+  'http://localhost:8555/publisher?topic=imani' \
+  -H 'accept: */*' \
+  -H 'Content-Type: application/json' \
+  -d '{ "icon" : "fa-box", "time" : "05:00 PM", "activity" : "Refrigerator Door Ajar" }'
+  
+curl -X 'POST' \
+  'http://localhost:8555/publisher?topic=imani' \
+  -H 'accept: */*' \
+  -H 'Content-Type: application/json' \
+  -d '{ "icon" : "fa-box", "time" : "05:01 PM", "activity" : "Refrigerator Door Closed" '
+```

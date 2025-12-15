@@ -1,5 +1,6 @@
 package showcase.alarm.ai.source.service;
 
+import lombok.extern.slf4j.Slf4j;
 import nyla.solutions.core.patterns.repository.memory.ListRepository;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -11,37 +12,46 @@ import java.util.List;
 
 
 @Service
+@Slf4j
 public class InMemoryAlDetectorService implements AlertDetectorService{
-    private final ListRepository<Activity> repository;
+    private final ListRepository<Activity> activityRepository;
     private final AlertsModelInference modelInference;
     private final int batchCount;
 
-    public InMemoryAlDetectorService(ListRepository<Activity> repository,
+    public InMemoryAlDetectorService(ListRepository<Activity> activityRepository,
                                      AlertsModelInference modelInference,
                                      @Value("${alerts.inference.batch}")
                                      int batchCount) {
-        this.repository = repository;
+        this.activityRepository = activityRepository;
         this.modelInference = modelInference;
         this.batchCount = batchCount;
     }
 
     @Override
     public List<Alert> detectAlerts(Activity activity) {
-        repository.save(activity);
+        log.info("Saving activity: {}",activity);
+
+        activityRepository.save(activity);
+        log.info("Detecting alerts for activity: {}",activity);
 
         return checkForAlerts();
     }
 
     @Override
-    public List<Alert> checkForAlerts() {
-        var activities = (List<Activity>) repository.findAll();
+    public synchronized List<Alert> checkForAlerts() {
+        log.info("Checking for alerts");
+        var activities = (List<Activity>) activityRepository.findAll();
+        log.info("Activities: {}",activities);
 
         if((activities).size() > batchCount)
         {
             var alerts = this.modelInference.determineAlert(activities);
 
             if(alerts != null && !alerts.isEmpty())
-                repository.deleteAll();
+            {
+                log.info("Deleting activities from repository");
+                activityRepository.deleteAll();
+            }
 
             return alerts;
         }

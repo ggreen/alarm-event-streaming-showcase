@@ -8,7 +8,7 @@ spring:
       embedding: ollama
       chat: ollama
     ollama:
-      base-url: http://localhost:11434
+#      base-url: http://localhost:11434
       chat:
         options:
           format: "json"
@@ -25,6 +25,9 @@ spring:
           group: activities.activity
           consumer:
             concurrency: 1
+        loadRepositoryConsumer-in-0:
+          destination: activities.activity
+          group: activities.activity
         alertAiProcessor-out-0:
           destination: alerts.alert
           group: alerts.alert
@@ -33,6 +36,10 @@ spring:
           group: alerts.alert
       rabbit:
         bindings:
+          loadRepositoryConsumer-in-0:
+            consumer:
+              containerType: STREAM
+              queueNameGroupOnly: true
           alertAiProcessor-in-0:
             consumer:
               containerType: STREAM

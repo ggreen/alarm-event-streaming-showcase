@@ -1,6 +1,7 @@
 package showcase.alarm.ai.source.functions;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.stereotype.Component;
@@ -15,10 +16,14 @@ import java.util.function.Function;
  * Alert AI processor
  */
 @Component
-@RequiredArgsConstructor
+@Slf4j
 public class AlertAiProcessor implements Function<Activity,List<Message<Alert>>> {
 
     private final AlertDetectorService detectorService;
+
+    public AlertAiProcessor(AlertDetectorService detectorService) {
+        this.detectorService = detectorService;
+    }
 
     @Override
     public List<Message<Alert>> apply(Activity activity) {
