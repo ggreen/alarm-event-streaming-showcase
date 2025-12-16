@@ -1,12 +1,12 @@
 # IoT Alert SQL Demo
 
-Start Rabbit
+1. Start Rabbit
 
 ```shell
 ./deployment/local/containers/rabbit.sh
 ```
 
-Start MQTT 5 Source
+2. Start MQTT 5 Source
 
 ```shell
 java -jar applications/http-source/target/http-source-0.0.1-SNAPSHOT.jar \
@@ -16,14 +16,14 @@ java -jar applications/http-source/target/http-source-0.0.1-SNAPSHOT.jar \
   --mqtt.userPassword=guest --spring.profiles.active=mqtt
 ```
 
-Start Alarm app for all imani alerts
+3. Start Alarm app for all imani alerts
 
 ```shell
 java -jar applications/alert-app/target/alert-app-0.0.1-SNAPSHOT.jar --spring.rabbitmq.host=localhost --spring.rabbitmq.username=guest --spring.rabbitmq.password=guest --spring.cloud.stream.bindings.input.destination="amq.topic" --stream.destination="alerts.alert" --stream.exchange.bind.key="#"   --stream.filter.sql="account = 'imani' AND level IN ('critical', 'high','medium','low')" --server.port=8080 --stream.activity.filter.name="account" --stream.activity.filter.value="imani" --alert.refresh.rateSeconds=1
 ```
 
 
-CRITICAL ONLY imani
+4. Start app CRITICAL ONLY alerts
 
 ```shell
 java -jar applications/alert-app/target/alert-app-0.0.1-SNAPSHOT.jar --spring.rabbitmq.host=localhost --spring.application.name="imani-critical" --spring.rabbitmq.username=guest --spring.rabbitmq.password=guest --spring.cloud.stream.bindings.input.destination="amq.topic" --stream.destination="alerts.alert" --stream.exchange.bind.key="#"   --stream.filter.sql="account = 'imani' AND level IN ('critical')" --server.port=8911 --stream.activity.filter.name="account" --stream.activity.filter.value="imani"
@@ -34,7 +34,7 @@ java -jar applications/alert-app/target/alert-app-0.0.1-SNAPSHOT.jar --spring.ra
 
 # Post Alerts
 
-Post critical alert
+5. Post critical alert
 
 ```shell
 curl -X 'POST' \
@@ -46,7 +46,7 @@ curl -X 'POST' \
   -d '{"id" : "01", "account" : "imani", "level" : "critical", "time" : "7:00AM", "event" : "Break-in in progress" }'
 ```
 
-Post High
+6. Post High
 
 ```shell
 curl -X 'POST' \
@@ -58,7 +58,7 @@ curl -X 'POST' \
   -d '{"id" : "03", "account" : "imani", "level" : "high", "time" : "7:00AM", "event" : "BUS Left!!" }'
 ```
 
-Post Critical
+7. Post Critical
 
 ```shell
 curl -X 'POST' \
@@ -66,40 +66,30 @@ curl -X 'POST' \
   -H 'accept: */*' \
   -H 'Content-Type: application/json' \
   -H "account: imani" \
-  -H "level: critical" \
-  -d '{"id" : "02", "account" : "imani", "level" : "critical", "time" : "7:00AM", "event" : "BUS COMING!!" }'
+  -H "level: high" \
+  -d '{"id" : "02", "account" : "imani", "level" : "high", "time" : "7:00AM", "event" : "BUS COMING!!" }'
   
 ```
 
 
-Open Imani for All alerts
+8. Open Imani for All alerts
 
 ```shell
 open http:///localhost:8080
 ```
 
 
-Only Critical
+9. Only Critical
 
 ```shell
 open http:///localhost:8911
 ```
 
-Restart Apps
-
 
 -----------------------------
 
-Generator Activities
 
-```shell
-java -jar applications/generator-supplier-source/target/generator-supplier-source-0.0.1-SNAPSHOT.jar --spring.cloud.stream.bindings.input.producer.poller.fixed-delay=1 --spring.cloud.stream.poller.fixedDelay=1 --spring.cloud.stream.poller.max-messages=1000000
-```
-
-
-No new alerts
-
-Start AMQP 1.0 Source
+11. Start AMQP 1.0 Source
 
 ```shell
 java -jar applications/http-source/target/http-source-0.0.1-SNAPSHOT.jar \
@@ -110,16 +100,7 @@ java -jar applications/http-source/target/http-source-0.0.1-SNAPSHOT.jar \
 ```
 
 
-```json
-{
-  "id" :  "1", 
-  "icon" : "fa-door-open",
-  "time" : "06:30 PM", 
-  "activity" : "Garage Door Opened"
-}
-```
-
-Publish Activity
+11. Publish Activity
 
 ```shell
 curl -X 'POST' \
@@ -128,6 +109,7 @@ curl -X 'POST' \
   -H 'Content-Type: application/json' \
   -d '{
   "id" :  "1", 
+  "account" : "imani",
   "icon" : "fa-door-open",
   "time" : "06:30 PM", 
   "activity" : "Garage Door Opened"
@@ -140,6 +122,7 @@ curl -X 'POST' \
   -H 'Content-Type: application/json' \
   -d '{
   "id" :  "2", 
+  "account" : "imani",
   "icon" : "fa-door-closed",
   "time" : "06:31 PM", 
   "activity" : "Garage Door Closed"
@@ -153,6 +136,7 @@ curl -X 'POST' \
   -H 'Content-Type: application/json' \
   -d '{
   "id" :  "3", 
+  "account" : "imani",
   "icon" : "fa-door-open",
   "time" : "06:33 PM", 
   "activity" : "Garage Door Opened"
@@ -166,12 +150,20 @@ curl -X 'POST' \
   -H 'Content-Type: application/json' \
   -d '{
   "id" :  "4", 
+  "account" : "imani",
   "icon" : "fa-door-closed",
   "time" : "06:31 PM", 
   "activity" : "Garage Door Closed"
 }'
 ```
 
+
+11. Restart Apps for Data as Service
+
+
+------------------
+
+# Artificial Intelligence
 
 Given the following activities, identify alerts, 
 For each alert response with the "level" with values of (CRITICAL, HIGH, MEDIUM, Low),
@@ -180,16 +172,16 @@ the time and the event which contains why you believe this is an alert
 ONLY RESPONSE the Json Object fields level, time, and event
 
 ```json
-{ "icon" : "fa-shield-alt", "time" : "07:15 PM", "activity" : "Alarm System Turned OFF" },
-{ "icon" : "fa-door-open", "time" : "07:14 PM", "activity" : "Front Door Opened" },
-{ "icon" : "fa-door-closed"", "time" : "07:14 PM"", "activity" : "Front Door Closed" },
-{ "icon" : "fa-temperature-low", "time" : "06:55 PM", "activity" : "Thermostat Set to 68°F (Cool)" },
-{ "icon" : "fa-door-open", "time" : "06:30 PM", "activity" : "Garage Door Opened" },
-{ "icon" : "fa-door-closed", "time" : "06:31 PM", "activity" : "Garage Door Closed" },
-{ "icon" : "fa-shield-alt", "time" : "06:00 PM", "activity" : "Alarm System Turned ON (Away)" },
-{ "icon" : "fa-temperature-high", "time" : "05:45 PM", "activity" : "Thermostat Set to 72°F (Heat)" },
-{ "icon" : "fa-box", "time" : "05:00 PM", "activity" : "Refrigerator Door Ajar" },
-{ "icon" : "fa-box", "time" : "05:01 PM", "activity" : "Refrigerator Door Closed" }
+{ "icon" : "fa-shield-alt",  "account" : "josiah", "time" : "07:15 PM", "activity" : "Alarm System Turned OFF" },
+{ "icon" : "fa-door-open",   "account" : "josiah", "time" : "07:14 PM", "activity" : "Front Door Opened" },
+{ "icon" : "fa-door-closed"",   "account" : "josiah", "time" : "07:14 PM"", "activity" : "Front Door Closed" },
+{ "icon" : "fa-temperature-low",   "account" : "josiah", "time" : "06:55 PM", "activity" : "Thermostat Set to 68°F (Cool)" },
+{ "icon" : "fa-door-open",   "account" : "josiah", "time" : "06:30 PM", "activity" : "Garage Door Opened" },
+{ "icon" : "fa-door-closed",   "account" : "josiah", "time" : "06:31 PM", "activity" : "Garage Door Closed" },
+{ "icon" : "fa-shield-alt",   "account" : "josiah", "time" : "06:00 PM", "activity" : "Alarm System Turned ON (Away)" },
+{ "icon" : "fa-temperature-high",   "account" : "josiah", "time" : "05:45 PM", "activity" : "Thermostat Set to 72°F (Heat)" },
+{ "icon" : "fa-box",   "account" : "josiah", "time" : "05:00 PM", "activity" : "Refrigerator Door Ajar" },
+{ "icon" : "fa-box",   "account" : "josiah", "time" : "05:01 PM", "activity" : "Refrigerator Door Closed" }
 ```
 
 Use Context Below
@@ -207,14 +199,14 @@ the time and the event which contains why you believe this is an alert
 ONLY RESPONSE the Json Object fields level, time, and event
 
 ```json
-[{ "icon" : "fa-shield-alt", "time" : "07:15 PM", "activity" : "Alarm System Turned OFF Successfully" }, 
-{ "icon" : "fa-door-open", "time" : "07:14 PM", "activity" : "Front Door Opened" },
-{ "icon" : "fa-temperature-low", "time" : "06:55 PM", "activity" : "Thermostat Set to 68°F (Cool)" },
-{ "icon" : "fa-door-open", "time" : "06:30 PM", "activity" : "Garage Door Opened" },
-{ "icon" : "fa-shield-alt", "time" : "06:00 PM", "activity" : "Alarm System Turned ON (Away)" },
-{ "icon" : "fa-temperature-high", "time" : "05:45 PM", "activity" : "Thermostat Set to 72°F (Heat)" },
-{ "icon" : "fa-box", "time" : "05:00 PM", "activity" : "Refrigerator Door Ajar" },
-{ "icon" : "fa-box", "time" : "05:01 PM", "activity" : "Refrigerator Door Closed" }]
+[{ "icon" : "fa-shield-alt",   "account" : "josiah", "time" : "07:15 PM", "activity" : "Alarm System Turned OFF Successfully" }, 
+{ "icon" : "fa-door-open",   "account" : "josiah", "time" : "07:14 PM", "activity" : "Front Door Opened" },
+{ "icon" : "fa-temperature-low",   "account" : "josiah", "time" : "06:55 PM", "activity" : "Thermostat Set to 68°F (Cool)" },
+{ "icon" : "fa-door-open",   "account" : "josiah", "time" : "06:30 PM", "activity" : "Garage Door Opened" },
+{ "icon" : "fa-shield-alt",   "account" : "josiah", "time" : "06:00 PM", "activity" : "Alarm System Turned ON (Away)" },
+{ "icon" : "fa-temperature-high",   "account" : "josiah", "time" : "05:45 PM", "activity" : "Thermostat Set to 72°F (Heat)" },
+{ "icon" : "fa-box",   "account" : "josiah", "time" : "05:00 PM", "activity" : "Refrigerator Door Ajar" },
+{ "icon" : "fa-box",   "account" : "josiah", "time" : "05:01 PM", "activity" : "Refrigerator Door Closed" }]
 ```
 
 Use Context Below
@@ -228,9 +220,16 @@ Door Opened with No Door Closed is a MEDIUM Alert
 ----------------------
 
 
+Start AI Processor Application
+
+
+```shell
+java -jar applications/alert-ai-processor/target/alert-ai-processor-0.0.1-SNAPSHOT.jar
+```
+
 ```shell
 curl -X 'POST' \
-  'http://localhost:8555/publisher?topic=imani' \
+  'http://localhost:8555/publisher?topic=josiah' \
   -H 'accept: */*' \
   -H 'Content-Type: application/json' \
   -d '{ "id" : "70", "icon" : "fa-shield-alt", "account" : "imani", "time" : "07:15 PM", "activity" : "Alarm System Turned OFF Successfully" }'
@@ -277,3 +276,13 @@ curl -X 'POST' \
   -H 'Content-Type: application/json' \
   -d '{ "id" : "77", "icon" : "fa-box", "account" : "imani", "time" : "05:01 PM", "activity" : "Refrigerator Door Closed" }'
 ```
+
+
+10. Generator Activities
+
+```shell
+java -jar applications/generator-supplier-source/target/generator-supplier-source-0.0.1-SNAPSHOT.jar --spring.cloud.stream.bindings.input.producer.poller.fixed-delay=1 --spring.cloud.stream.poller.fixedDelay=1 --spring.cloud.stream.poller.max-messages=1000000
+```
+
+
+No new alerts

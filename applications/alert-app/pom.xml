@@ -32,9 +32,16 @@
 	</properties>
 	<dependencies>
         <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-webmvc</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-freemarker</artifactId>
+        </dependency>
+        <dependency>
             <groupId>org.springframework.amqp</groupId>
             <artifactId>spring-rabbitmq-client</artifactId>
-<!--            <version>4.0.0</version>-->
         </dependency>
         <dependency>
             <groupId>org.springdoc</groupId>

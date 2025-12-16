@@ -34,7 +34,9 @@ public class RabbitConfig {
         return (cont, dest, group) -> {
             if(cont instanceof StreamListenerContainer container)
             {
+                //set filter
                 container.setConsumerCustomizer((name, builder) -> {
+
                     builder.offset(OffsetSpecification.first())
                             .name(Text.generator().generateId()); //TODO: fix in future
 
