@@ -62,6 +62,7 @@ public class Amqp1_0SupplierConfig {
             String filterValue = message.getHeaders().get(MessagingConstants.TOPIC_HEADER, String.class);
             var msg = publisher
                     .message(body.getBytes(StandardCharsets.UTF_8))
+                    .annotation(MessagingConstants.FILTER_VALUE_NM, filterValue)
                     .contentType(contentType)
                     .property(filterProperty, filterValue);
 

@@ -77,3 +77,7 @@ alerts:
     names:
       account: "account"
       level: "level"
+stream:
+  activity:
+    filter:
+      value: "josiah"

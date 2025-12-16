@@ -1,13 +1,12 @@
 package showcase.alarm.ai.source;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.rabbitmq.stream.MessageBuilder;
 import com.rabbitmq.stream.OffsetSpecification;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import nyla.solutions.core.util.Text;
 import org.springframework.amqp.rabbit.listener.MessageListenerContainer;
 import org.springframework.amqp.support.converter.MessageConversionException;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.function.context.config.JsonMessageConverter;
 import org.springframework.cloud.function.json.JacksonMapper;
 import org.springframework.cloud.stream.config.ListenerContainerCustomizer;
@@ -29,6 +28,12 @@ import org.springframework.rabbit.stream.support.converter.StreamMessageConverte
 public class RabbitConfig {
 
 
+    @Value("${stream.activity.filter.value}")
+    private String filterValue;
+
+    @Value("${stream.activity.filter.name:account}")
+    private String filterPropName;
+
     @Bean
     ListenerContainerCustomizer<MessageListenerContainer> customizer() {
         return (cont, dest, group) -> {
@@ -37,8 +42,20 @@ public class RabbitConfig {
                 //set filter
                 container.setConsumerCustomizer((name, builder) -> {
 
-                    builder.offset(OffsetSpecification.first())
-                            .name(Text.generator().generateId()); //TODO: fix in future
+                    log.info("Filtering consumer with value: {}",filterValue);
+                    builder.noTrackingStrategy()
+                            .filter().values(filterValue)
+                                    .postFilter( message ->
+                                            {
+                                                return filterValue.equals(message
+                                                        .getApplicationProperties()
+                                                        .get(filterPropName));
+                                            }
+
+                                            );
+
+                    builder.offset(OffsetSpecification.first());
+//                            .name(Text.generator().generateId()); //Delete
 
                 });
             }
