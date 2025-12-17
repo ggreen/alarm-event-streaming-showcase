@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestClientCustomizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.client.ReactorNettyClientRequestFactory;
 import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -29,6 +30,8 @@ public class ModelInferenceConfig {
             
             ONLY RESPONSE WITH Json Object fields level, account, time, and event
             
+            ADD details on WHY you identified the alert and the level in the field "event" 
+            
             ```json
             {listOfActivities}
             ```
@@ -38,7 +41,13 @@ public class ModelInferenceConfig {
             DO NOT alert when Opened door or Garage Door AND the door is closed at a later time
             DO NOT alert when Alarm System Turned On
             DO NOT alert when Alarm System Turned OFF Successfully
-            Door Opened with No Door Closed is a MEDIUM Alert
+            DO NOT alert then Thermostat Set least Than 72°F (Heat)
+            Front Door Opened with No Front Door Closed is a high Alert
+            Garage Door Opened with No Garage Door Closed is a medium Alert
+            Alarm System TRIGGER possible BREAK-IN is a critical Alert
+            Window Broken ALARM TRIGGERED is a critical Alert
+            Front Door Broken ALARM TRIGGERED is a critical Alert
+            Camera Broken ALARM TRIGGERED  is a critical Alert
             """;
     // Define a long timeout, e.g., 3 minutes (180 seconds)
 
@@ -59,6 +68,17 @@ public class ModelInferenceConfig {
 
             restClientBuilder.requestFactory(factory);
         };
+    }
+
+
+    @Bean
+    ReactorNettyClientRequestFactory reactorNettyClientRequestFactory()
+    {
+        var factory = new ReactorNettyClientRequestFactory();
+        factory.setConnectTimeout(Duration.ofSeconds(connectionTimeoutSeconds));
+        factory.setReadTimeout(Duration.ofSeconds(readTimeoutSeconds));
+
+        return factory;
     }
 
     @Bean
@@ -85,6 +105,7 @@ public class ModelInferenceConfig {
 
     @Bean
     ChatClient chatClient(ChatModel chatModel){
+
         return ChatClient
                 .builder(chatModel)
                 .defaultOptions(ChatOptions.builder()

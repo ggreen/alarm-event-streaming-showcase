@@ -15,8 +15,8 @@ spring:
       chat:
         options:
           format: "json"
-          model: llama3.1:8b
-
+          model: llama3.2
+#          model: llama3.1:8b
   cloud:
     function:
       definition: alertAiProcessor
@@ -68,8 +68,8 @@ spring:
 ai:
   timeouts:
     seconds:
-      connection: 120
-      read: 120
+      connection: 220
+      read: 220
 alerts:
   inference:
     batch: 5

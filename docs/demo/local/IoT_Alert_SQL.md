@@ -1,5 +1,7 @@
 # IoT Alert SQL Demo
 
+0. Disable WSS Agent!!!!
+
 1. Start Rabbit
 
 ```shell
@@ -347,7 +349,17 @@ No new alerts
 
 SCDF 
 
+
+```shell
+open http://localhost:9393/dashboard/index.html#/apps
+```
+
 ```shell
 
-IOT-STREAM_CRITICAL=iot-source --spring.application.name=iot-source --spring.profiles.active="amqp1.0" --source.amqp.filter.property.name="account" --server.port=9555 --spring.cloud.stream.bindings.output.destination="activities.activity" | alert-ai-processor --stream.activity.filter.value=josiah | alert-app --spring.cloud.stream.bindings.input.destination="amq.topic" --stream.destination="alerts.alert" --stream.exchange.bind.key="#"   --stream.filter.sql="account = 'josiah' AND level IN ('critical', 'high','medium')" --server.port=9777 --stream.activity.filter.name="account" --stream.activity.filter.value="josiah" --alert.refresh.rateSeconds=1
+IOT-STREAM_CRITICAL=iot-source --spring.application.name=iot-source --spring.profiles.active="amqp1.0" --source.amqp.filter.property.name="account" --server.port=9555 --spring.cloud.stream.bindings.output.destination="activities.activity" | alert-app --spring.cloud.stream.bindings.input.destination="amq.topic" --stream.destination="alerts.alert" --stream.exchange.bind.key="#"   --stream.filter.sql="account = 'josiah' AND level IN ('critical', 'high')" --server.port=9777 --stream.activity.filter.name="account" --stream.activity.filter.value="josiah" --alert.refresh.rateSeconds=1
+```
+
+
+```shell
+open http://localhost:9777
 ```
