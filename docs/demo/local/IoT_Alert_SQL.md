@@ -26,7 +26,13 @@ java -jar applications/alert-app/target/alert-app-0.0.1-SNAPSHOT.jar --spring.ra
 4. Start app CRITICAL ONLY alerts
 
 ```shell
-java -jar applications/alert-app/target/alert-app-0.0.1-SNAPSHOT.jar --spring.rabbitmq.host=localhost --spring.application.name="imani-critical" --spring.rabbitmq.username=guest --spring.rabbitmq.password=guest --spring.cloud.stream.bindings.input.destination="amq.topic" --stream.destination="alerts.alert" --stream.exchange.bind.key="#"   --stream.filter.sql="account = 'imani' AND level IN ('critical')" --server.port=8911 --stream.activity.filter.name="account" --stream.activity.filter.value="imani"
+java -jar applications/alert-app/target/alert-app-0.0.1-SNAPSHOT.jar --spring.rabbitmq.host=localhost --spring.application.name="imani-critical" --spring.rabbitmq.username=guest --spring.rabbitmq.password=guest --spring.cloud.stream.bindings.input.destination="amq.topic" --stream.destination="alerts.alert" --stream.exchange.bind.key="#"   --stream.filter.sql="account = 'imani' AND level IN ('critical')" --server.port=8911 --stream.activity.filter.name="account" --stream.activity.filter.value="imani" --alert.refresh.rateSeconds=1
+```
+
+5. Open RabbitMQ Management Dashboard
+
+```shell
+open http://localhost:15672
 ```
 
 
@@ -34,7 +40,7 @@ java -jar applications/alert-app/target/alert-app-0.0.1-SNAPSHOT.jar --spring.ra
 
 # Post Alerts
 
-5. Post critical alert
+6. Post critical alert
 
 ```shell
 curl -X 'POST' \
@@ -43,10 +49,10 @@ curl -X 'POST' \
   -H 'Content-Type: application/json' \
   -H "account: imani" \
   -H "level: critical" \
-  -d '{"id" : "01", "account" : "imani", "level" : "critical", "time" : "7:00AM", "event" : "Break-in in progress" }'
+  -d '{"id" : "01", "account" : "imani", "level" : "critical", "time" : "5:00AM", "event" : "Break-in in progress" }'
 ```
 
-6. Post High
+7. Post Alert
 
 ```shell
 curl -X 'POST' \
@@ -55,21 +61,37 @@ curl -X 'POST' \
   -H 'Content-Type: application/json' \
   -H "account: imani" \
   -H "level: high" \
-  -d '{"id" : "03", "account" : "imani", "level" : "high", "time" : "7:00AM", "event" : "BUS Left!!" }'
-```
-
-7. Post Critical
-
-```shell
-curl -X 'POST' \
-  'http://localhost:8383/publisher?topic=alerts' \
-  -H 'accept: */*' \
-  -H 'Content-Type: application/json' \
-  -H "account: imani" \
-  -H "level: high" \
-  -d '{"id" : "02", "account" : "imani", "level" : "high", "time" : "7:00AM", "event" : "BUS COMING!!" }'
+  -d '{"id" : "02", "account" : "imani", "level" : "high", "time" : "6:15AM", "event" : "Time to wakeup!" }'
   
 ```
+
+
+7. Post Alert
+
+```shell
+curl -X 'POST' \
+  'http://localhost:8383/publisher?topic=alerts' \
+  -H 'accept: */*' \
+  -H 'Content-Type: application/json' \
+  -H "account: imani" \
+  -H "level: medium" \
+  -d '{"id" : "03", "account" : "imani", "level" : "medium", "time" : "7:00AM", "event" : "BUS COMING!!" }'
+  
+```
+
+
+6. Post Alert
+
+```shell
+curl -X 'POST' \
+  'http://localhost:8383/publisher?topic=alerts' \
+  -H 'accept: */*' \
+  -H 'Content-Type: application/json' \
+  -H "account: imani" \
+  -H "level: low" \
+  -d '{"id" : "04", "account" : "imani", "level" : "low", "time" : "7:00AM", "event" : "BUS Left!!" }'
+```
+
 
 
 8. Open Imani for All alerts
@@ -114,8 +136,6 @@ curl -X 'POST' \
   "time" : "06:30 PM", 
   "activity" : "Garage Door Opened"
 }'
-```
-```shell
 curl -X 'POST' \
   'http://localhost:8555/publisher?topic=imani' \
   -H 'accept: */*' \
@@ -127,9 +147,7 @@ curl -X 'POST' \
   "time" : "06:31 PM", 
   "activity" : "Garage Door Closed"
 }'
-```
 
-```shell
 curl -X 'POST' \
   'http://localhost:8555/publisher?topic=imani' \
   -H 'accept: */*' \
@@ -141,9 +159,6 @@ curl -X 'POST' \
   "time" : "06:33 PM", 
   "activity" : "Garage Door Opened"
 }'
-```
-
-```shell
 curl -X 'POST' \
   'http://localhost:8555/publisher?topic=imani' \
   -H 'accept: */*' \
@@ -160,6 +175,7 @@ curl -X 'POST' \
 
 11. Restart Apps for Data as Service
 
+Data as a service
 
 ------------------
 
@@ -275,6 +291,35 @@ curl -X 'POST' \
   -H 'accept: */*' \
   -H 'Content-Type: application/json' \
   -d '{ "id" : "77", "icon" : "fa-box", "account" : "josiah", "time" : "05:01 PM", "activity" : "Refrigerator Door Closed" }'
+curl -X 'POST' \
+  'http://localhost:8555/publisher?topic=josiah' \
+  -H 'accept: */*' \
+  -H 'Content-Type: application/json' \
+  -d '{ "id" : "78", "icon" : "fa-box", "account" : "josiah", "time" : "05:03 PM", "activity" : "Alarm System Turned ON Successfully" }'
+  
+curl -X 'POST' \
+  'http://localhost:8555/publisher?topic=josiah' \
+  -H 'accept: */*' \
+  -H 'Content-Type: application/json' \
+  -d '{ "id" : "79", "icon" : "fa-box", "account" : "josiah", "time" : "08:03 PM", "activity" : "Alarm System TRIGGER possible BREAK-IN in progress, CALL 911!" }'
+  
+curl -X 'POST' \
+  'http://localhost:8555/publisher?topic=josiah' \
+  -H 'accept: */*' \
+  -H 'Content-Type: application/json' \
+  -d '{ "id" : "80", "icon" : "fa-box", "account" : "josiah", "time" : "08:03 PM", "activity" : "Window Broken ALARM TRIGGERED possible BREAK-IN in progress, CALL 911!" }'
+  
+curl -X 'POST' \
+  'http://localhost:8555/publisher?topic=josiah' \
+  -H 'accept: */*' \
+  -H 'Content-Type: application/json' \
+  -d '{ "id" : "81", "icon" : "fa-door-open", "account" : "josiah", "time" : "09:03 PM", "activity" : "Front Door Broken ALARM TRIGGERED possible BREAK-IN in progress, CALL 911!" }'
+  
+curl -X 'POST' \
+  'http://localhost:8555/publisher?topic=josiah' \
+  -H 'accept: */*' \
+  -H 'Content-Type: application/json' \
+  -d '{ "id" : "82", "icon" : "fas fa-camera", "account" : "josiah", "time" : "09:04 PM", "activity" : "Camera Broken ALARM TRIGGERED possible BREAK-IN in progress, CALL 911!" }'
 ```
 
 
@@ -297,3 +342,12 @@ java -jar applications/generator-supplier-source/target/generator-supplier-sourc
 
 
 No new alerts
+
+-----------------------
+
+SCDF 
+
+```shell
+
+IOT-STREAM_CRITICAL=iot-source --spring.application.name=iot-source --spring.profiles.active="amqp1.0" --source.amqp.filter.property.name="account" --server.port=9555 --spring.cloud.stream.bindings.output.destination="activities.activity" | alert-ai-processor --stream.activity.filter.value=josiah | alert-app --spring.cloud.stream.bindings.input.destination="amq.topic" --stream.destination="alerts.alert" --stream.exchange.bind.key="#"   --stream.filter.sql="account = 'josiah' AND level IN ('critical', 'high','medium')" --server.port=9777 --stream.activity.filter.name="account" --stream.activity.filter.value="josiah" --alert.refresh.rateSeconds=1
+```
