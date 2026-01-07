@@ -195,13 +195,13 @@ ONLY RESPONSE the Json Object fields level, time, and event
 [ACTIVITIES]
 ```json
 [
-  { "icon" : "fa-shield-alt",  "account" : "josiah", "time" : "07:15 PM", "activity" : "type: SALE, pan: 4111XXXXXX1111, amount: 100.00, date: '1-7-2026 19:12:34' terminal_id: TERM_88291, merchant_id: MERCH_55432"},
-  { "icon" : "fa-shield-alt",  "account" : "josiah", "time" : "07:17 PM", "activity" : "type: SALE, pan: 4111XXXXXX1111, amount: 1000.01, date: '1-7-2026 19:17:32' terminal_id: TERM_88291, merchant_id: MERCH_5555"},
-  { "icon" : "fa-shield-alt",  "account" : "josiah", "time" : "07:19 PM", "activity" : "type: SALE, pan: 4111XXXXXX1111, amount: 1.01, date: '1-7-2026 19:19:32' terminal_id: TERM_88291, merchant_id: MERCH_55432"},
-  { "icon" : "fa-shield-alt",  "account" : "josiah", "time" : "07:17 PM", "activity" : "type: SALE, pan: 4111XXXXXX1111, amount: 0.01, date: '1-7-2026 19:17:32' terminal_id: TERM_88291, merchant_id: MERCH_55432"},
-  { "icon" : "fa-shield-alt",  "account" : "josiah", "time" : "07:19 PM", "activity" : "type: SALE, pan: 4111XXXXXX1111, amount: 1.01, date: '1-7-2026 19:19:32' terminal_id: TERM_88291, merchant_id: MERCH_55432"},
-  { "icon" : "fa-shield-alt",  "account" : "josiah", "time" : "07:20 PM", "activity" : "type: SALE, pan: 4111XXXXXX1111, amount: 5.01, date: '1-7-2026 19:20:32' terminal_id: TERM_88291, merchant_id: MERCH_5555"},
-  { "icon" : "fa-shield-alt",  "account" : "josiah", "time" : "07:15 PM", "activity" : "type: SALE, pan: 4111XXXXXX1111, amount: 100.00, date: '1-7-2026 19:12:34' terminal_id: TERM_88291, merchant_id: MERCH_55432"}
+  { "icon" : "fa-credit-card",  "account" : "josiah", "time" : "07:15 PM", "activity" : "type: SALE, pan: 4111XXXXXX1111, amount: 100.00, date: '1-7-2026 19:12:34' terminal_id: TERM_88291, merchant_id: MERCH_55432"},
+  { "icon" : "fa-credit-card",  "account" : "josiah", "time" : "07:17 PM", "activity" : "type: SALE, pan: 4111XXXXXX1111, amount: 1000.01, date: '1-7-2026 19:17:32' terminal_id: TERM_88291, merchant_id: MERCH_5555"},
+  { "icon" : "fa-credit-card",  "account" : "josiah", "time" : "07:19 PM", "activity" : "type: SALE, pan: 4111XXXXXX1111, amount: 1.01, date: '1-7-2026 19:19:32' terminal_id: TERM_88291, merchant_id: MERCH_55432"},
+  { "icon" : "fa-credit-card",  "account" : "josiah", "time" : "07:17 PM", "activity" : "type: SALE, pan: 4111XXXXXX1111, amount: 0.01, date: '1-7-2026 19:17:32' terminal_id: TERM_88291, merchant_id: MERCH_55432"},
+  { "icon" : "fa-credit-card",  "account" : "josiah", "time" : "07:19 PM", "activity" : "type: SALE, pan: 4111XXXXXX1111, amount: 1.01, date: '1-7-2026 19:19:32' terminal_id: TERM_88291, merchant_id: MERCH_55432"},
+  { "icon" : "fa-credit-card",  "account" : "josiah", "time" : "07:20 PM", "activity" : "type: SALE, pan: 4111XXXXXX1111, amount: 5.01, date: '1-7-2026 19:20:32' terminal_id: TERM_88291, merchant_id: MERCH_5555"},
+  { "icon" : "fa-credit-card",  "account" : "josiah", "time" : "07:15 PM", "activity" : "type: SALE, pan: 4111XXXXXX1111, amount: 100.00, date: '1-7-2026 19:12:34' terminal_id: TERM_88291, merchant_id: MERCH_55432"}
 ]
 ```
 
@@ -221,7 +221,7 @@ Start AI Processor Application
 
 
 ```shell
-java -jar applications/alert-ai-processor/target/alert-ai-processor-0.0.1-SNAPSHOT.jar --stream.activity.filter.value=josiah
+java -jar applications/alert-ai-processor/target/alert-ai-processor-0.0.1-SNAPSHOT.jar --stream.activity.filter.value=josiah --spring.profiles.active=finance --spring.ai.ollama.chat.options.model=llama3.2:latest --alerts.inference.batch=4
 ```
 
 ```shell
@@ -229,78 +229,43 @@ curl -X 'POST' \
   'http://localhost:8555/publisher?topic=josiah' \
   -H 'accept: */*' \
   -H 'Content-Type: application/json' \
-  -d '{ "id" : "70", "icon" : "fa-shield-alt", "account" : "josiah", "time" : "07:15 PM", "activity" : "Alarm System Turned OFF Successfully" }'
+  -d '{ "id" : "70", "icon" : "fa-credit-card", "account" : "josiah", "time" : "07:15 PM", "activity" : "type: SALE, pan: 4111XXXXXX1111, amount: 100.00, date: 1-7-2026 19:12:34 terminal_id: TERM_88291, merchant_id: MERCH_55432" }'
 
 curl -X 'POST' \
   'http://localhost:8555/publisher?topic=josiah' \
   -H 'accept: */*' \
   -H 'Content-Type: application/json' \
-  -d '{ "id" : "71", "icon" : "fa-door-open",  "account" : "josiah", "time" : "07:14 PM", "activity" : "Front Door Opened" }'
+  -d '{ "id" : "71", "icon" : "fa-credit-card",  "account" : "josiah", "time" :  "07:17 PM", "activity" : "type: SALE, pan: 4111XXXXXX1111, amount: 1000.01, date: ''1-7-2026 19:17:32'' terminal_id: TERM_88291, merchant_id: MERCH_5555" }'
 
 curl -X 'POST' \
   'http://localhost:8555/publisher?topic=josiah' \
   -H 'accept: */*' \
   -H 'Content-Type: application/json' \
-  -d '{ "id" : "72", "icon" : "fa-temperature-low",  "account" : "josiah", "time" : "06:55 PM", "activity" : "Thermostat Set to 68°F (Cool)" }' 
+  -d '{ "id" : "72", "icon" : "fa-temperature-low",  "account" : "josiah", "time" : "07:19 PM", "activity" : "type: SALE, pan: 4111XXXXXX1111, amount: 1.01, date: ''1-7-2026 19:19:32'' terminal_id: TERM_88291, merchant_id: MERCH_55432"}' 
    
 curl -X 'POST' \
   'http://localhost:8555/publisher?topic=josiah' \
   -H 'accept: */*' \
   -H 'Content-Type: application/json' \
-  -d '{ "id" : "73", "icon" : "fa-door-open",  "account" : "josiah", "time" : "06:30 PM", "activity" : "Garage Door Opened" }'
+  -d '{ "id" : "73", "icon" : "fa-credit-card",  "account" : "josiah", "time" : "07:17 PM", "activity" : "type: SALE, pan: 4111XXXXXX1111, amount: 0.01, date: ''1-7-2026 19:17:32'' terminal_id: TERM_88291, merchant_id: MERCH_55432" }'
   
 curl -X 'POST' \
   'http://localhost:8555/publisher?topic=josiah' \
   -H 'accept: */*' \
   -H 'Content-Type: application/json' \
-  -d '{ "id" : "74", "icon" : "fa-shield-alt",  "account" : "josiah", "time" : "06:00 PM", "activity" : "Alarm System Turned ON (Away)" }'
+  -d '{ "id" : "74", "icon" : "fa-credit-card",  "account" : "josiah", "time" : "07:19 PM", "activity" : "type: SALE, pan: 4111XXXXXX1111, amount: 1.01, date: ''1-7-2026 19:19:32'' terminal_id: TERM_88291, merchant_id: MERCH_55432" }'
   
 curl -X 'POST' \
   'http://localhost:8555/publisher?topic=josiah' \
   -H 'accept: */*' \
   -H 'Content-Type: application/json' \
-  -d '{ "id" : "75", "icon" : "fa-temperature-high",  "account" : "josiah", "time" : "05:45 PM", "activity" : "Thermostat Set to 72°F (Heat)" }'
+  -d '{ "id" : "75", "icon" : "fa-credit-card",  "account" : "josiah", "time" :  "07:20 PM", "activity" : "type: SALE, pan: 4111XXXXXX1111, amount: 5.01, date: ''1-7-2026 19:20:32'' terminal_id: TERM_88291, merchant_id: MERCH_5555" }'
 
 curl -X 'POST' \
   'http://localhost:8555/publisher?topic=josiah' \
   -H 'accept: */*' \
   -H 'Content-Type: application/json' \
-  -d '{ "id" : "76", "icon" : "fa-box",  "account" : "josiah", "time" : "05:00 PM", "activity" : "Refrigerator Door Ajar" }'
-  
-curl -X 'POST' \
-  'http://localhost:8555/publisher?topic=josiah' \
-  -H 'accept: */*' \
-  -H 'Content-Type: application/json' \
-  -d '{ "id" : "77", "icon" : "fa-box", "account" : "josiah", "time" : "05:01 PM", "activity" : "Refrigerator Door Closed" }'
-curl -X 'POST' \
-  'http://localhost:8555/publisher?topic=josiah' \
-  -H 'accept: */*' \
-  -H 'Content-Type: application/json' \
-  -d '{ "id" : "78", "icon" : "fa-box", "account" : "josiah", "time" : "05:03 PM", "activity" : "Alarm System Turned ON Successfully" }'
-  
-curl -X 'POST' \
-  'http://localhost:8555/publisher?topic=josiah' \
-  -H 'accept: */*' \
-  -H 'Content-Type: application/json' \
-  -d '{ "id" : "79", "icon" : "fa-box", "account" : "josiah", "time" : "08:03 PM", "activity" : "Alarm System TRIGGER possible BREAK-IN in progress, CALL 911!" }'
-  
-curl -X 'POST' \
-  'http://localhost:8555/publisher?topic=josiah' \
-  -H 'accept: */*' \
-  -H 'Content-Type: application/json' \
-  -d '{ "id" : "80", "icon" : "fa-box", "account" : "josiah", "time" : "08:03 PM", "activity" : "Window Broken ALARM TRIGGERED possible BREAK-IN in progress, CALL 911!" }'
-  
-curl -X 'POST' \
-  'http://localhost:8555/publisher?topic=josiah' \
-  -H 'accept: */*' \
-  -H 'Content-Type: application/json' \
-  -d '{ "id" : "81", "icon" : "fa-door-open", "account" : "josiah", "time" : "09:03 PM", "activity" : "Front Door Broken ALARM TRIGGERED possible BREAK-IN in progress, CALL 911!" }'
-  
-curl -X 'POST' \
-  'http://localhost:8555/publisher?topic=josiah' \
-  -H 'accept: */*' \
-  -H 'Content-Type: application/json' \
-  -d '{ "id" : "82", "icon" : "fas fa-camera", "account" : "josiah", "time" : "09:04 PM", "activity" : "Camera Broken ALARM TRIGGERED possible BREAK-IN in progress, CALL 911!" }'
+  -d '{ "id" : "76", "icon" : "fa-credit-card",  "account" : "josiah", "time" : "07:15 PM", "activity" : "type: SALE, pan: 4111XXXXXX1111, amount: 100.00, date: ''1-7-2026 19:12:34'' terminal_id: TERM_88291, merchant_id: MERCH_55432" }'
 ```
 
 

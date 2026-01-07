@@ -8,15 +8,20 @@ spring:
       read-timeout: 60s
   ai:
     model:
-      embedding: ollama
+#      embedding: ollama
       chat: ollama
     ollama:
 #      base-url: http://localhost:11434
       chat:
         options:
           format: "json"
-          model: llama3.2
-#          model: llama3.1:8b
+          model: gpt-oss:20b
+#          model: mistral:latest
+          # Increase to 60 or 120 seconds
+      init:
+        time-out: 5m
+        max-retries: 1
+  #          model: llama3.1:8b
   cloud:
     function:
       definition: alertAiProcessor
@@ -68,11 +73,12 @@ spring:
 ai:
   timeouts:
     seconds:
-      connection: 220
-      read: 220
+      connection: 202000
+      read: 220000
 alerts:
   inference:
-    batch: 5
+    batch: 2
+    delayMs: 5000
   header:
     names:
       account: "account"

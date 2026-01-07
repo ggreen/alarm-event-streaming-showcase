@@ -31,6 +31,7 @@ class InMemoryAlDetectorServiceTest {
     @Mock
     private AlertsModelInference alertsModelinference;
     private final Alert alert = JavaBeanGeneratorCreator.of(Alert.class).create();
+    private final static long delayMs = 1000*60;
 
     @BeforeEach
     void setUp() {
@@ -41,7 +42,7 @@ class InMemoryAlDetectorServiceTest {
     @Test
     void givenHashMoreThanMin_when_detectAlerts_Then_Call() {
 
-        subject = new InMemoryAlDetectorService(activityRepository, alertsModelinference,1);
+        subject = new InMemoryAlDetectorService(activityRepository, alertsModelinference,1,delayMs);
 
         List<Alert> expected = List.of(alert);
         var activities = List.of(activity,activity);
@@ -58,7 +59,7 @@ class InMemoryAlDetectorServiceTest {
     @Test
     void givenHashLessThanMin_when_detectAlerts_Then_DoNotInfernece() {
 
-        subject = new InMemoryAlDetectorService(activityRepository, alertsModelinference,10);
+        subject = new InMemoryAlDetectorService(activityRepository, alertsModelinference,10,delayMs);
 
         List<Alert> expected = List.of(alert);
         var activities = List.of(activity,activity);
@@ -76,7 +77,8 @@ class InMemoryAlDetectorServiceTest {
     @Test
     void given_activities_with_alert_when_checkAlerts_then_Sends_Alerts() {
 
-        subject = new InMemoryAlDetectorService(activityRepository, alertsModelinference,2);
+        int batchCount = 2;
+        subject = new InMemoryAlDetectorService(activityRepository, alertsModelinference,batchCount,delayMs);
 
         List<Activity> activities = List.of(activity,activity,activity);
         when(activityRepository.findAll()).thenReturn(activities);
@@ -88,5 +90,30 @@ class InMemoryAlDetectorServiceTest {
         assertThat(alerts).isNotEmpty();
         verify(activityRepository).deleteAll();
 
+    }
+
+    @Test
+    void given_activities_with_alert_lessThanThreshold_but_AfterDelay_when_checkForAlerts_after_alerts() throws InterruptedException {
+
+        int batchCount = 2;
+        long delayMs = 10;
+        subject = new InMemoryAlDetectorService(activityRepository, alertsModelinference,batchCount,delayMs);
+        when(activityRepository.findAll())
+                .thenReturn(List.of(activity))
+                .thenReturn(List.of(activity,activity));
+
+        List<Alert> expected  = List.of(alert);
+        when(alertsModelinference.determineAlert(any())).thenReturn(expected);
+
+        List<Alert> alerts =  subject.detectAlerts(activity);
+        assertThat(alerts).isNull();
+
+        //Sleep past delay
+        Thread.sleep(delayMs+1);
+
+        alerts =  subject.detectAlerts(activity);
+
+        assertThat(alerts).isNotEmpty();
+        verify(activityRepository).deleteAll();
     }
 }
