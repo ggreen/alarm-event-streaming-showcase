@@ -51,7 +51,7 @@ curl -X 'POST' \
   -H 'Content-Type: application/json' \
   -H "account: imani" \
   -H "level: critical" \
-  -d '{"id" : "01", "account" : "imani", "level" : "critical", "time" : "5:00AM", "event" : "Break-in in progress" }'
+  -d '{"id" : "01", "account" : "imani", "level" : "critical", "time" : "5:00AM", "event" : "Multiple ATM pin numbers entries incorrect at location in Jersey City, New Jersey" }'
 ```
 
 7. Post Alert
@@ -63,7 +63,7 @@ curl -X 'POST' \
   -H 'Content-Type: application/json' \
   -H "account: imani" \
   -H "level: high" \
-  -d '{"id" : "02", "account" : "imani", "level" : "high", "time" : "6:15AM", "event" : "Time to wakeup!" }'
+  -d '{"id" : "02", "account" : "imani", "level" : "high", "time" : "6:15AM", "event" : "Account balance just dropped below threshold!" }'
   
 ```
 
@@ -77,7 +77,7 @@ curl -X 'POST' \
   -H 'Content-Type: application/json' \
   -H "account: imani" \
   -H "level: medium" \
-  -d '{"id" : "03", "account" : "imani", "level" : "medium", "time" : "7:00AM", "event" : "BUS COMING!!" }'
+  -d '{"id" : "03", "account" : "imani", "level" : "medium", "time" : "7:00AM", "event" : "Account password has not been updated in a long time and is recommended to update as soon as possible!" }'
   
 ```
 
@@ -91,7 +91,7 @@ curl -X 'POST' \
   -H 'Content-Type: application/json' \
   -H "account: imani" \
   -H "level: low" \
-  -d '{"id" : "04", "account" : "imani", "level" : "low", "time" : "7:00AM", "event" : "BUS Left!!" }'
+  -d '{"id" : "04", "account" : "imani", "level" : "low", "time" : "7:00AM", "event" : "Friendly reminder to contribute to your Roth IRA" }'
 ```
 
 
@@ -134,9 +134,9 @@ curl -X 'POST' \
   -d '{
   "id" :  "1", 
   "account" : "imani",
-  "icon" : "fa-door-open",
+  "icon" : "fa-credit-card",
   "time" : "06:30 PM", 
-  "activity" : "Garage Door Opened"
+  "activity" : "Opened new credit card account"
 }'
 curl -X 'POST' \
   'http://localhost:8555/publisher?topic=imani' \
@@ -145,9 +145,9 @@ curl -X 'POST' \
   -d '{
   "id" :  "2", 
   "account" : "imani",
-  "icon" : "fa-door-closed",
+  "icon" : "fa-file-invoice",
   "time" : "06:31 PM", 
-  "activity" : "Garage Door Closed"
+  "activity" : "Account statements shipped to home address"
 }'
 
 curl -X 'POST' \
@@ -157,9 +157,9 @@ curl -X 'POST' \
   -d '{
   "id" :  "3", 
   "account" : "imani",
-  "icon" : "fa-door-open",
+  "icon" : "fa-hand-holding-dollar",
   "time" : "06:33 PM", 
-  "activity" : "Garage Door Opened"
+  "activity" : "Wire transfer of amount above threshold"
 }'
 curl -X 'POST' \
   'http://localhost:8555/publisher?topic=imani' \
@@ -168,9 +168,9 @@ curl -X 'POST' \
   -d '{
   "id" :  "4", 
   "account" : "imani",
-  "icon" : "fa-door-closed",
+  "icon" : "fa-wallet",
   "time" : "06:31 PM", 
-  "activity" : "Garage Door Closed"
+  "activity" : "Visa credit card download to digital wallet"
 }'
 ```
 
