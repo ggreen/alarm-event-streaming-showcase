@@ -1,7 +1,7 @@
 # Alert Showcase
 
 
-Real Time  alarm-event-streaming-showcase.
+Real Time  alarm-event-streaming-showcase using [Spring AI](https://spring.io/projects/spring-ai) and [RabbitMQ Streams SQL filtering](https://www.rabbitmq.com/blog/2025/09/23/sql-filter-expressions).
 
 ![RealTime AI-ML RabbitMQ and Spring AI](docs/img/architecture.png)
 
