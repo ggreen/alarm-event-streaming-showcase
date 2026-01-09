@@ -183,16 +183,24 @@ Data as a service
 
 # Artificial Intelligence
 
+Start Ollama
+
 ```shell
 ollama run llama3.2:latest
 ```
 
+The following is an example prompt used for fraud
+detection.
+
+```text
 Given the following payment activities, identify potential fraud alerts, 
 For each alert response with the "level" with values of (CRITICAL, HIGH, MEDIUM, Low),
 the time and the event which contains why you believe this is an alert
 ONLY RESPONSE the Json Object fields level, time, and event
 
 [ACTIVITIES]
+```
+
 ```json
 [
   { "icon" : "fa-credit-card",  "account" : "josiah", "time" : "07:15 PM", "activity" : "type: SALE, pan: 4111XXXXXX1111, amount: 100.00, date: '1-7-2026 19:12:34' terminal_id: TERM_88291, merchant_id: MERCH_55432"},
@@ -205,7 +213,7 @@ ONLY RESPONSE the Json Object fields level, time, and event
 ]
 ```
 
-
+```text
 Use Context Below
 CONTEXT:
 
@@ -214,6 +222,8 @@ Activities for the same account from one more than 1 terminal_id within 5 minute
 Activities with a series of very small transactions (e.g., $0.01 or $1.00) in rapid succession is a HIGH alert
 Activities with merchant_id: MERCH_5555 and amount less than 10 is LOW alert, if amount greater than 100 that create HIGH alert
 Activities for the same account from one more than 1 terminal_id greater than a 1-minute time difference is not an alert
+
+```
 ----------------------
 
 
@@ -287,6 +297,7 @@ Start Josiah Alert App (critical alerts ONLY)
 java -jar applications/alert-app/target/alert-app-0.0.1-SNAPSHOT.jar --spring.rabbitmq.host=localhost --spring.rabbitmq.username=guest --spring.rabbitmq.password=guest --spring.cloud.stream.bindings.input.destination="amq.topic" --stream.destination="alerts.alert" --stream.exchange.bind.key="#"   --stream.filter.sql="account = 'josiah' AND level IN ('critical')" --server.port=8778 --stream.activity.filter.name="account" --stream.activity.filter.value="josiah" --alert.refresh.rateSeconds=1
 ```
 
+Open Web Application
 
 ```shell
 open http://localhost:8778
@@ -295,28 +306,12 @@ open http://localhost:8778
 
 10. Generator Activities
 
+Start Generator to demo existing applications do not get generated
+alerts and activities because of the RabbitMQ filtering.
+
 ```shell
 java -jar applications/generator-supplier-source/target/generator-supplier-source-0.0.1-SNAPSHOT.jar --spring.cloud.stream.bindings.input.producer.poller.fixed-delay=1 --spring.cloud.stream.poller.fixedDelay=1 --spring.cloud.stream.poller.max-messages=1000000
 ```
 
 
-No new alerts
-
------------------------
-
-SCDF 
-
-
-```shell
-open http://localhost:9393/dashboard/index.html#/apps
-```
-
-```shell
-
-IOT-STREAM_CRITICAL=iot-source --spring.application.name=iot-source --spring.profiles.active="amqp1.0" --source.amqp.filter.property.name="account" --server.port=9555 --spring.cloud.stream.bindings.output.destination="activities.activity" | alert-app --spring.cloud.stream.bindings.input.destination="amq.topic" --stream.destination="alerts.alert" --stream.exchange.bind.key="#"   --stream.filter.sql="account = 'josiah' AND level IN ('critical', 'high')" --server.port=9777 --stream.activity.filter.name="account" --stream.activity.filter.value="josiah" --alert.refresh.rateSeconds=1
-```
-
-
-```shell
-open http://localhost:9777
-```
+Expected No new alerts or activities in running applications.
