@@ -9,4 +9,5 @@ Real Time  alarm-event-streaming-showcase
 
 Demo Instructions
 
-- [Demo Instructors](docs/demo/local/IoT_Alert_SQL.md)
+- [Iot Home Security Demo Instructions](docs/demo/local/IoT_Alert_SQL.md)
+- [Financial Payment RealTime Fraud Detection Demo Instructions](docs/demo/local/Payments_Alert_SQL.md)

@@ -27,10 +27,10 @@ public class ServiceFinancePaymentsConfig {
             Use Context Below
             CONTEXT:
             
-            Activities for the same account from one more than 1 terminal_id within 1 minute time differences is a CRITICAL alert.
-            Activities for the same account from one more than 1 terminal_id within 5 minute time differences is a HIGH alert.
-            Activities with a series of very small transactions (e.g., $0.01 or $1.00) in rapid succession is a HIGH alert
-            Activities with merchant_id: MERCH_5555 and amount less than 10 is LOW alert, if amount greater than 100 that create HIGH alert
+            Activities for the same account from one more than 1 terminal_id within 1 minute time differences is a critical alert.
+            Activities for the same account from one more than 1 terminal_id within 5 minute time differences is a high alert.
+            Activities with a series of very small transactions (e.g., $0.01 or $1.00) in rapid succession is a high alert
+            Activities with merchant_id: MERCH_5555 and amount less than 10 is LOW alert, if amount greater than 100 that create high alert
             Activities for the same account from one more than 1 terminal_id greater than a 1-minute time difference is not an alert
             """;
     @Bean

@@ -242,7 +242,7 @@ Start AI Processor Application
 
 
 ```shell
-java -jar applications/alert-ai-processor/target/alert-ai-processor-0.0.1-SNAPSHOT.jar --stream.activity.filter.value=josiah
+java -jar applications/alert-ai-processor/target/alert-ai-processor-0.0.1-SNAPSHOT.jar --stream.activity.filter.value=josiah -spring.profiles.active=iot
 ```
 
 ```shell

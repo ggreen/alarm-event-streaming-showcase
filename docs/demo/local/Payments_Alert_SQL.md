@@ -221,7 +221,7 @@ Start AI Processor Application
 
 
 ```shell
-java -jar applications/alert-ai-processor/target/alert-ai-processor-0.0.1-SNAPSHOT.jar --stream.activity.filter.value=josiah --spring.profiles.active=finance --spring.ai.ollama.chat.options.model=llama3.2:latest --alerts.inference.batch=4
+java -jar applications/alert-ai-processor/target/alert-ai-processor-0.0.1-SNAPSHOT.jar --stream.activity.filter.value=josiah --spring.profiles.active=finance --spring.ai.ollama.chat.options.model=llama3.2:latest --alerts.inference.batch=6
 ```
 
 ```shell
@@ -279,6 +279,19 @@ java -jar applications/alert-app/target/alert-app-0.0.1-SNAPSHOT.jar --spring.ra
 ```shell
 open http://localhost:8777
 ```
+
+Start Josiah Alert App (critical alerts ONLY)
+
+
+```shell
+java -jar applications/alert-app/target/alert-app-0.0.1-SNAPSHOT.jar --spring.rabbitmq.host=localhost --spring.rabbitmq.username=guest --spring.rabbitmq.password=guest --spring.cloud.stream.bindings.input.destination="amq.topic" --stream.destination="alerts.alert" --stream.exchange.bind.key="#"   --stream.filter.sql="account = 'josiah' AND level IN ('critical')" --server.port=8778 --stream.activity.filter.name="account" --stream.activity.filter.value="josiah" --alert.refresh.rateSeconds=1
+```
+
+
+```shell
+open http://localhost:8778
+```
+
 
 10. Generator Activities
 
