@@ -3,6 +3,8 @@
 
 Real Time  alarm-event-streaming-showcase.
 
+![RealTime AI-ML RabbitMQ and Spring AI](docs/img/architecture.png)
+
 This demo uses [RabbitMQ Streams SQL filtering](https://www.rabbitmq.com/blog/2025/09/23/sql-filter-expressions). 
 It demonstrates the power of RabbitMQ to deliver high throughput 
 messaging with flexible, routing and filtering.
